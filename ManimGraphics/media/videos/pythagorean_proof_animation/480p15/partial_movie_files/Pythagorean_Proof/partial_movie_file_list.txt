@@ -1,3 +1,9 @@
 # This file is used internally by FFMPEG.
 file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/pythagorean_proof_animation/480p15/partial_movie_files/Pythagorean_Proof/1185818338_1159634679_223132457.mp4'
-file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/pythagorean_proof_animation/480p15/partial_movie_files/Pythagorean_Proof/624642324_1141282389_2189894138.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/pythagorean_proof_animation/480p15/partial_movie_files/Pythagorean_Proof/624642324_1959358871_2189894138.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/pythagorean_proof_animation/480p15/partial_movie_files/Pythagorean_Proof/624642324_3364356525_3567727165.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/pythagorean_proof_animation/480p15/partial_movie_files/Pythagorean_Proof/624642324_1959358871_2956136690.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/pythagorean_proof_animation/480p15/partial_movie_files/Pythagorean_Proof/624642324_30269555_1644288104.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/pythagorean_proof_animation/480p15/partial_movie_files/Pythagorean_Proof/624642324_1959358871_3311464334.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/pythagorean_proof_animation/480p15/partial_movie_files/Pythagorean_Proof/624642324_372057003_2954126445.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/pythagorean_proof_animation/480p15/partial_movie_files/Pythagorean_Proof/624642324_1141282389_174183514.mp4'
