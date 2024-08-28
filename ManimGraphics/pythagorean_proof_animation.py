@@ -2,13 +2,19 @@ from manim import *
 
 class Pythagorean_Proof(Scene):
     def construct(self):
-        right_triangle = self.create_triangle()
-        self.add_triangle_labels(right_triangle)
+        initial_right_triangle = self.create_initial_triangle()
+        self.add_initial_triangle_labels(initial_right_triangle)
         
-        square = self.draw_square_on_hypotenuse(right_triangle)
+        square = self.draw_square_on_hypotenuse(initial_right_triangle)
         self.add_labels_to_square(square)
+        square.set_z_index(1)
 
-    def create_triangle(self):
+        self.copy_move_rotate_triangles(initial_right_triangle, square)
+        #self.fit_triangles_into_square(square)
+
+        self.add_labels_to_new_triangles()
+
+    def create_initial_triangle(self):
         right_angle_vertex = LEFT * 2 + DOWN * 2
         horizontal_vertex = RIGHT * 2 + right_angle_vertex
         vertical_vertex = UP * 2 + right_angle_vertex
@@ -21,7 +27,7 @@ class Pythagorean_Proof(Scene):
         self.wait(0.5)
         return right_triangle
 
-    def add_triangle_labels(self, triangle):
+    def add_initial_triangle_labels(self, triangle):
         # Calculate midpoints for the sides to position the labels
         vertices = triangle.get_vertices()
         mid_a = (vertices[0] + vertices[1]) / 2  # Midpoint of side a
@@ -72,20 +78,67 @@ class Pythagorean_Proof(Scene):
         
         # Fade in the labels
         self.play(FadeIn(label_c2), FadeIn(label_c3), FadeIn(label_c4))
+        self.wait(0.5)
+
+    def copy_move_rotate_triangles(self, triangle, square):
+        vertices = square.get_vertices()
+        triangle_copies = []
+        #diagnonal_offset = 0.5
+
+        directions = [UP * 4, RIGHT * 4, DOWN * 4]
+        #diagonal_offset_directions = [LEFT * diagnonal_offset, RIGHT * diagnonal_offset, DOWN * diagnonal_offset]
+        angle_of_rotation_clockwise = -PI / 2
+        
+        for i, direction in enumerate(directions):
+            if i == 0:
+                new_triangle = triangle.copy()
+            else:
+                new_triangle = triangle_copies[-1].copy()
+            
+            triangle_copies.append(new_triangle)
+
+            self.play(new_triangle.animate.shift(direction))
+            
+            rotate_angle = angle_of_rotation_clockwise
+            rotate_point = new_triangle.get_vertices()[0]
+            self.play(new_triangle.animate.rotate(rotate_angle, about_point=rotate_point))
+
+            #adjust_distance = diagonal_offset_directions[i]
+            #self.play(new_triangle.animate.shift(adjust_distance))
+        
+        self.wait(0.5)
+        self.triangle_copies = triangle_copies
+
+    def fit_triangles_into_square(self, square):
+        vertices = square.get_vertices()
+        for i, triangle in enumerate(self.triangle_copies):
+            start, end = vertices[i], vertices[(i + 1) % 4]
+            direction_vector = end - start
+            self.play(triangle.animate.move_to(start + direction_vector / 2), run_time=1.5)
+
         self.wait(2)
 
-        """
-        tilted_square = Square(side_length=2).rotate(PI / 4)  
-        tilted_square.set_color(BLUE)
-        self.play(Create(tilted_square))
+    def add_a_b_labels_to_triangle(self, triangle, label_a_pos, label_b_pos):
+        vertices = triangle.get_vertices()
+        mid_a = (vertices[0] + vertices[1]) / 2
+        mid_b = (vertices[0] + vertices[2]) / 2
 
-        duplicate_square = tilted_square.copy()  
-        duplicate_square.set_color(GREEN)
-        duplicate_square.move_to(tilted_square.get_center())
-        self.play(Create(duplicate_square))
+        label_a = MathTex("a").next_to(mid_a, label_a_pos)
+        label_b = MathTex("b").next_to(mid_b, label_b_pos)
+        self.play(FadeIn(label_a), FadeIn(label_b))
 
-        self.play(ScaleInPlace(duplicate_square, 1.5))
-        self.play(Rotate(duplicate_square, angle = PI / 4))  
+    def add_labels_to_new_triangles(self):
+        label_positions = [
+            (UP, LEFT),
+            (UP, RIGHT),   
+            (DOWN, RIGHT)  
+        ]
 
-        self.wait(2)
-        """
+        for i, triangle in enumerate(self.triangle_copies):
+            label_a_pos, label_b_pos = label_positions[i]
+            self.add_a_b_labels_to_triangle(triangle, label_a_pos, label_b_pos)
+
+        self.wait(0.5)
+
+    def midpoint(p1, p2):
+        return (p1 + p2) / 2
