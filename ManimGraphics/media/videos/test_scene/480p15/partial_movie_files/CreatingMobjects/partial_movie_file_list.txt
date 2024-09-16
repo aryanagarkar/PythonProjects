@@ -1,5 +1,0 @@
-# This file is used internally by FFMPEG.
-file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/test_scene/480p15/partial_movie_files/CreatingMobjects/1185818338_1332077962_4173930198.mp4'
-file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/test_scene/480p15/partial_movie_files/CreatingMobjects/624642324_3890345977_3120531477.mp4'
-file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/test_scene/480p15/partial_movie_files/CreatingMobjects/624642324_1624981740_1962880573.mp4'
-file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/test_scene/480p15/partial_movie_files/CreatingMobjects/624642324_3890345977_3222475621.mp4'
