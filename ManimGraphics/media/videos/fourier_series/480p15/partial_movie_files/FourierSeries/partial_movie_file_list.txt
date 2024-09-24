@@ -1,7 +1,0 @@
-# This file is used internally by FFMPEG.
-file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_series/480p15/partial_movie_files/FourierSeries/1185818338_4158743636_223132457.mp4'
-file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_series/480p15/partial_movie_files/FourierSeries/624642324_2437162759_1405902524.mp4'
-file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_series/480p15/partial_movie_files/FourierSeries/624642324_1058269539_1381126572.mp4'
-file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_series/480p15/partial_movie_files/FourierSeries/624642324_2872529604_240211850.mp4'
-file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_series/480p15/partial_movie_files/FourierSeries/624642324_2002092957_1634474929.mp4'
-file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_series/480p15/partial_movie_files/FourierSeries/624642324_1499155478_2040687442.mp4'
