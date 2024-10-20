@@ -29,9 +29,11 @@ class SquareFunction(Scene):
 		values = []
 		values1 = []
 		
+		"""
 		cumulative_terms = ["sin(x)"]
 		cumulative_text = Text(" + ".join(cumulative_terms), font_size=24).next_to(axes, UP, buff=0.2)
-
+		"""
+		
 		index = 1
 
 		for i in range(1, 31, 2):
@@ -40,7 +42,7 @@ class SquareFunction(Scene):
 
 		self.add(axes, square_graph,  values[0])
 		self.play(ReplacementTransform(values[0], values1[0]))
-		self.add(cumulative_text)
+		#self.add(cumulative_text)
 
 		fixed_y_position_for_text = 2
 		
@@ -49,10 +51,11 @@ class SquareFunction(Scene):
 			self.wait(1)
 			self.play(ReplacementTransform(values[i], values1[i]), ReplacementTransform(values1[i - 1], values1[i]))
 			
-			if i > 1:
+			"""if i > 1:
 				new_term = f"sin({i * 2 - 1}x)"
 				cumulative_terms.append(new_term)
 
 			updated_cumulative_text = Text(" + ".join(cumulative_terms), font_size=24).next_to(axes, UP, buff=0)
 			self.play(Transform(cumulative_text, updated_cumulative_text))
 			cumulative_text = updated_cumulative_text
+			"""

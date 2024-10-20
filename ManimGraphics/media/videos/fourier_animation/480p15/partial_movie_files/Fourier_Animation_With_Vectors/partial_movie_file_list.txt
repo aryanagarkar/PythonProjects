@@ -1,0 +1,13 @@
+# This file is used internally by FFMPEG.
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_animation/480p15/partial_movie_files/Fourier_Animation_With_Vectors/1185818338_2082460430_2027327930.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_animation/480p15/partial_movie_files/Fourier_Animation_With_Vectors/624642324_3975346578_3603618665.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_animation/480p15/partial_movie_files/Fourier_Animation_With_Vectors/624642324_937285507_765829708.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_animation/480p15/partial_movie_files/Fourier_Animation_With_Vectors/624642324_3279553155_3466480002.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_animation/480p15/partial_movie_files/Fourier_Animation_With_Vectors/624642324_3492298613_1519394474.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_animation/480p15/partial_movie_files/Fourier_Animation_With_Vectors/624642324_3622209149_1551080284.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_animation/480p15/partial_movie_files/Fourier_Animation_With_Vectors/624642324_1076264915_840467032.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_animation/480p15/partial_movie_files/Fourier_Animation_With_Vectors/624642324_4005637824_769278573.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_animation/480p15/partial_movie_files/Fourier_Animation_With_Vectors/624642324_3282163716_1473227090.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_animation/480p15/partial_movie_files/Fourier_Animation_With_Vectors/624642324_2396412964_1547190729.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_animation/480p15/partial_movie_files/Fourier_Animation_With_Vectors/624642324_1679837063_1853354999.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_animation/480p15/partial_movie_files/Fourier_Animation_With_Vectors/624642324_1141282389_3684791254.mp4'
