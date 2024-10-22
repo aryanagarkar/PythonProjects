@@ -154,47 +154,44 @@ class FourierTransform(FourierSceneAbstract):
 
     def construct(self):
         # Symbols to draw
-        symbol1 = self.get_tex_symbol("m", RED)
-        group = VGroup(symbol1)
+        symbol = self.get_tex_symbol("$\\pi$", RED)
 
         # Fourier series for symbol1
-        vectors1 = self.get_fourier_vectors(self.get_path_from_symbol(symbol1))
-        circles1 = self.get_circles(vectors1)
-        drawn_path1 = self.get_drawn_path(vectors1).set_color(RED)
+        vectors = self.get_fourier_vectors(self.get_path_from_symbol(symbol))
+        circles = self.get_circles(vectors)
+        drawn_path = self.get_drawn_path(vectors).set_color(RED)
 
         # Camera updater
-        last_vector = vectors1[-1]
+        last_vector = vectors[-1]
 
         # Scene start
         self.wait(1)
         self.play(
             *[
                 GrowArrow(arrow)
-                for vector_group in [vectors1]
-                for arrow in vector_group
+                for arrow in vectors
             ],
             *[
                 Create(circle)
-                for circle_group in [circles1]
-                for circle in circle_group
+                for circle in circles
             ],
             run_time=2.5,
         )
 
         # Add objects to scene
         self.add( 
-            vectors1,
-            circles1,
-            drawn_path1.set_stroke(width = self.drawn_path_stroke_width)
+            vectors,
+            circles,
+            drawn_path.set_stroke(width = self.drawn_path_stroke_width)
         )
  
         # Add updaters and start vector clock
-        vectors1.add_updater(self.update_vectors)
-        circles1.add_updater(self.update_circles)
-        drawn_path1.add_updater(self.update_path)
+        vectors.add_updater(self.update_vectors)
+        circles.add_updater(self.update_circles)
+        drawn_path.add_updater(self.update_path)
         self.start_vector_clock()
 
-        self.play(self.slow_factor_tracker.animate.set_value(2), run_time = self.cycle_seconds)
+        self.play(self.slow_factor_tracker.animate.set_value(0.5), run_time = self.cycle_seconds)
         self.wait(1 * self.cycle_seconds)
 
         self.wait(0.8 * self.cycle_seconds)
@@ -202,14 +199,14 @@ class FourierTransform(FourierSceneAbstract):
         
         # Remove updaters so can animate
         self.stop_vector_clock()
-        drawn_path1.clear_updaters()
-        vectors1.clear_updaters()
-        circles1.clear_updaters()
+        drawn_path.clear_updaters()
+        vectors.clear_updaters()
+        circles.clear_updaters()
 
         self.play(
             *[
                 Uncreate(vmobject)
-                for vgroup in [vectors1, circles1]
+                for vgroup in [vectors, circles]
                 for vmobject in vgroup
             ],
             run_time = 2.5,
