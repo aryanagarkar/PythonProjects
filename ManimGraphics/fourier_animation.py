@@ -4,21 +4,19 @@ import numpy as np
 class FourierSceneAbstract(ZoomedScene):
     def __init__(self):
         super().__init__()
+
         self.fourier_symbol_config = {
             "stroke_width": 1,
-            "fill_opacity": 1,
-            "height": 4,
+            "height": 4
         }
+
         self.vector_config = {
-            "buff": 0,
-            "max_tip_length_to_length_ratio": 0.25,
             "tip_length": 0.15,
-            "max_stroke_width_to_length_ratio": 10,
-            "stroke_width": 1.4
+            "stroke_width": 1.5
         }
+
         self.circle_config = {
             "stroke_width": 1,
-            "stroke_opacity": 0.7,
             "color": WHITE
         }
 
@@ -26,7 +24,6 @@ class FourierSceneAbstract(ZoomedScene):
         self.cycle_seconds = 5
         self.parametric_func_step = 0.001   
         self.drawn_path_stroke_width = 5
-        self.drawn_path_interpolation_config = [0, 1]
         self.path_n_samples = 1000
         self.freqs = list(range(-self.n_vectors // 2, self.n_vectors // 2 + 1, 1))
         self.freqs.sort(key=abs)
@@ -37,60 +34,56 @@ class FourierSceneAbstract(ZoomedScene):
         self.slow_factor_tracker = ValueTracker(0)
         self.add(self.vector_clock)
 
-    def start_vector_clock(self):           
-        self.vector_clock.add_updater(
-            lambda t, dt: t.increment_value(dt * self.slow_factor_tracker.get_value() / self.cycle_seconds)
-        )
-
-    def stop_vector_clock(self):
-        self.vector_clock.remove_updater(self.start_vector_clock)
+    def toggle_vector_clock(self, start):           
+        if start:
+            self.vector_clock.add_updater(
+                lambda t, dt: t.increment_value(dt * self.slow_factor_tracker.get_value() / self.cycle_seconds)
+            )
+        else:
+            self.vector_clock.clear_updaters()
 
     def get_fourier_coefs(self, path):
         dt = 1 / self.path_n_samples
-        t_range = np.arange(0, 1, dt)
+        t_range = np.linspace(0, 1, self.path_n_samples)
 
-        points = np.array([
-            path.point_from_proportion(t)
-            for t in t_range
-        ])
+        points = np.array([path.point_from_proportion(t) for t in t_range])
         complex_points = points[:, 0] + 1j * points[:, 1]
 
-        coefficients = [
-            np.sum(np.array([
-                c_point * np.exp(-TAU * 1j * freq * t) * dt
-                for t, c_point in zip(t_range, complex_points)
-                ]))
-            for freq in self.freqs
-        ]
-        return coefficients
+        exponentials = np.exp(-TAU * 1j * np.outer(self.freqs, t_range))
+        coefficients = np.dot(exponentials, complex_points) * dt
 
+        return coefficients
+        
     def get_fourier_vectors(self, path):
         coefficients = self.get_fourier_coefs(path)
         
         vectors = VGroup()
-        v_is_first_vector = True
-        for coef, freq in zip(coefficients,self.freqs):
+        last_v = None
+        for i in range(len(coefficients)):
+            coef = coefficients[i]
+            freq = self.freqs[i]
             v = Vector([np.real(coef), np.imag(coef)], **self.vector_config)
-            if v_is_first_vector:
-                center_func = VectorizedPoint(ORIGIN).get_location # Function to center position at tip of last vector
-                v_is_first_vector = False
+            
+            if last_v:
+                v.center_func = last_v.get_end
             else:
-                center_func = last_v.get_end
-            v.center_func = center_func
-            last_v = v
+                v.center_func = VectorizedPoint(ORIGIN).get_location
+
             v.freq = freq
             v.coef = coef
             v.phase = np.angle(coef)
-            v.shift(v.center_func()-v.get_start())
+            v.shift(v.center_func() - v.get_start())
             v.set_angle(v.phase)
             vectors.add(v)
-        return vectors
+            last_v = v
 
+        return vectors
+        
     def update_vectors(self, vectors):
-            for v in vectors:
-                time = self.vector_clock.get_value()
-                v.shift(v.center_func()-v.get_start())
-                v.set_angle(v.phase + time * v.freq * TAU)  
+        for v in vectors:
+            time = self.vector_clock.get_value()
+            v.shift(v.center_func()-v.get_start())
+            v.set_angle(v.phase + time * v.freq * TAU)  
               
     def get_circles(self, vectors):
         circles = VGroup()
@@ -108,10 +101,14 @@ class FourierSceneAbstract(ZoomedScene):
     def get_drawn_path(self, vectors):    
 
         def fourier_series_func(t):
-            fss = np.sum(np.array([
-                v.coef * np.exp(TAU * 1j * v.freq * t)
-                for v in vectors
-            ]))
+            # Initialize the sum as a complex number
+            fss = 0 + 0j  # Starting with a complex zero
+        
+            # Loop through each vector and compute its contribution
+            for v in vectors:
+                fss += v.coef * np.exp(TAU * 1j * v.freq * t)
+        
+            # Extract real and imaginary parts
             real_fss = np.array([np.real(fss), np.imag(fss), 0])
             return real_fss
         
@@ -119,32 +116,31 @@ class FourierSceneAbstract(ZoomedScene):
         vector_sum_path = ParametricFunction(fourier_series_func, t_range = t_range)
         broken_path = CurvesAsSubmobjects(vector_sum_path)
         broken_path.stroke_width = 0
-        broken_path.start_width = self.drawn_path_interpolation_config[0]
-        broken_path.end_width = self.drawn_path_interpolation_config[1]
         return broken_path
 
     def update_path(self, broken_path):
         alpha = self.vector_clock.get_value()
         n_curves = len(broken_path)
-        alpha_range = np.linspace(0, 1, n_curves)
-        
-        for a, subpath in zip(alpha_range, broken_path):
-            b = (alpha - a)
-            if b < 0:
-                width = 0  # Do not draw if it's not in range
-            else:
+
+        # Iterate using a traditional for loop
+        for i in range(n_curves):
+            subpath = broken_path[i]
+            a = i / (n_curves - 1)  # Calculate the corresponding value of a
+            if (alpha > a):
                 width = self.drawn_path_stroke_width
-                
-            subpath.set_stroke(width=width)
+            else:
+                width = 0
+            
+            subpath.set_stroke(width=width)  # Update the stroke width of the subpath
 
 class FourierTransform(FourierSceneAbstract):
     def __init__(self):
         super().__init__()
 
-    def get_tex_symbol(self, symbol, color = None):
-        symbol = Tex(symbol, **self.fourier_symbol_config)
-    
-        if (color is not None):
+    def get_tex_symbol(self, symbol, color):
+        symbol = Tex(symbol, stroke_width=1, fill_opacity=1, height=4)
+
+        if color is not None:
             symbol.set_color(color)
 
         return symbol
@@ -153,11 +149,14 @@ class FourierTransform(FourierSceneAbstract):
         return symbol.family_members_with_points()[0]
 
     def construct(self):
-        # Symbols to draw
+        # Symbols to draw.
         symbol = self.get_tex_symbol("$\\pi$", RED)
 
+        # Symbol path to trace.
+        symbol_path = self.get_path_from_symbol(symbol)
+
         # Fourier series for symbol1
-        vectors = self.get_fourier_vectors(self.get_path_from_symbol(symbol))
+        vectors = self.get_fourier_vectors(symbol_path)
         circles = self.get_circles(vectors)
         drawn_path = self.get_drawn_path(vectors).set_color(RED)
 
@@ -166,15 +165,21 @@ class FourierTransform(FourierSceneAbstract):
 
         # Scene start
         self.wait(1)
+        
+        # Create a list for arrow animations
+        arrow_animations = []
+        for arrow in vectors:
+            arrow_animations.append(GrowArrow(arrow))
+
+        # Create a list for circle animations
+        circle_animations = []
+        for circle in circles:
+            circle_animations.append(Create(circle))
+
+        # Execute all create animations.
         self.play(
-            *[
-                GrowArrow(arrow)
-                for arrow in vectors
-            ],
-            *[
-                Create(circle)
-                for circle in circles
-            ],
+            *arrow_animations,
+            *circle_animations,
             run_time=2.5,
         )
 
@@ -189,7 +194,7 @@ class FourierTransform(FourierSceneAbstract):
         vectors.add_updater(self.update_vectors)
         circles.add_updater(self.update_circles)
         drawn_path.add_updater(self.update_path)
-        self.start_vector_clock()
+        self.toggle_vector_clock(start=True)
 
         self.play(self.slow_factor_tracker.animate.set_value(0.5), run_time = self.cycle_seconds)
         self.wait(1 * self.cycle_seconds)
@@ -197,19 +202,27 @@ class FourierTransform(FourierSceneAbstract):
         self.wait(0.8 * self.cycle_seconds)
         self.play(self.slow_factor_tracker.animate.set_value(0), run_time = 0.5 * self.cycle_seconds)
         
-        # Remove updaters so can animate
-        self.stop_vector_clock()
+        # Remove updaters so can animate.
+        self.toggle_vector_clock(start=False)
         drawn_path.clear_updaters()
         vectors.clear_updaters()
         circles.clear_updaters()
 
+        # Create a single list that contains all the VMobjects to be uncreated
+        uncreate_animations = []
+
+        # Add uncreate animations for all objects in vectors
+        for arrow in vectors:
+            uncreate_animations.append(Uncreate(arrow))
+
+        # Add uncreate animations for all objects in circles
+        for circle in circles:
+            uncreate_animations.append(Uncreate(circle))
+
+        # Execute all uncreate animations.
         self.play(
-            *[
-                Uncreate(vmobject)
-                for vgroup in [vectors, circles]
-                for vmobject in vgroup
-            ],
-            run_time = 2.5,
+            *uncreate_animations,
+            run_time=2.5,
         )
 
         self.wait(3)
