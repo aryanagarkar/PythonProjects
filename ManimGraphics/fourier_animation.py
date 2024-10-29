@@ -153,8 +153,8 @@ class FourierTransform(FourierSceneAbstract):
         image2 = SVGMobject("chandrabindu_curve.svg", height=1)
         image3 = SVGMobject("chandrabindu_circle.svg", height=0.5)
         
-        image2.shift(2.2*UP+0.8*RIGHT)
-        image3.shift(2.8*UP+0.8*RIGHT)
+        image2.shift(2.3*UP+0.9*RIGHT)
+        image3.shift(2.9*UP+0.8*RIGHT)
 
         image1_path = self.get_path_from_image(image1)
         image2_path = self.get_path_from_image(image2)
@@ -166,11 +166,11 @@ class FourierTransform(FourierSceneAbstract):
 
         vectors2 = self.get_fourier_vectors(image2_path, num_vectors=20)
         circles2 = self.get_circles(vectors2)
-        drawn_path2 = self.get_drawn_path(vectors2).set_color(BLUE)
+        drawn_path2 = self.get_drawn_path(vectors2).set_color(YELLOW)
 
-        vectors3 = self.get_fourier_vectors(image3_path, num_vectors=30)
+        vectors3 = self.get_fourier_vectors(image3_path, num_vectors=2)
         circles3 = self.get_circles(vectors3)
-        drawn_path3 = self.get_drawn_path(vectors3).set_color(BLUE)
+        drawn_path3 = self.get_drawn_path(vectors3).set_color(YELLOW)
 
         self.wait(1)
 

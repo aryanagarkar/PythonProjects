@@ -1,0 +1,9 @@
+# This file is used internally by FFMPEG.
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_animation/480p15/partial_movie_files/FourierTransform/3862130965_4205520711_2529580759.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_animation/480p15/partial_movie_files/FourierTransform/2371444939_1313796273_3008355928.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_animation/480p15/partial_movie_files/FourierTransform/2371444939_4246909156_452982290.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_animation/480p15/partial_movie_files/FourierTransform/2371444939_1145396840_1915541277.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_animation/480p15/partial_movie_files/FourierTransform/2371444939_2874140712_3232256889.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_animation/480p15/partial_movie_files/FourierTransform/2371444939_3276857903_2617028293.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_animation/480p15/partial_movie_files/FourierTransform/2371444939_3735270755_538271125.mp4'
+file 'file:/Users/nagarkar/workspace/PythonProjects/ManimGraphics/media/videos/fourier_animation/480p15/partial_movie_files/FourierTransform/2371444939_1258821655_2868247811.mp4'
