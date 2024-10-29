@@ -164,11 +164,11 @@ class FourierTransform(FourierSceneAbstract):
         circles1 = self.get_circles(vectors1)
         drawn_path1 = self.get_drawn_path(vectors1).set_color(RED)
 
-        vectors2 = self.get_fourier_vectors(image2_path, num_vectors=15)
+        vectors2 = self.get_fourier_vectors(image2_path, num_vectors=20)
         circles2 = self.get_circles(vectors2)
         drawn_path2 = self.get_drawn_path(vectors2).set_color(BLUE)
 
-        vectors3 = self.get_fourier_vectors(image3_path, num_vectors=35)
+        vectors3 = self.get_fourier_vectors(image3_path, num_vectors=30)
         circles3 = self.get_circles(vectors3)
         drawn_path3 = self.get_drawn_path(vectors3).set_color(BLUE)
 
