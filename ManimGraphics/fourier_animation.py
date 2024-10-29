@@ -1,6 +1,9 @@
 from manim import *
 import numpy as np
 
+from manim import config
+config.tex_template.compiler = "xelatex"
+
 class FourierSceneAbstract(ZoomedScene):
     def __init__(self):
         super().__init__()
@@ -20,11 +23,11 @@ class FourierSceneAbstract(ZoomedScene):
             "color": WHITE
         }
 
-        self.n_vectors = 40
+        self.n_vectors = 60   
         self.cycle_seconds = 5
         self.parametric_func_step = 0.001   
         self.drawn_path_stroke_width = 5
-        self.path_n_samples = 1000
+        self.path_n_samples = 1000    
         self.freqs = list(range(-self.n_vectors // 2, self.n_vectors // 2 + 1, 1))
         self.freqs.sort(key=abs)
 
@@ -54,7 +57,12 @@ class FourierSceneAbstract(ZoomedScene):
 
         return coefficients
         
-    def get_fourier_vectors(self, path):
+    def get_fourier_vectors(self, path, num_vectors=None):
+        if num_vectors is not None:
+            self.n_vectors = num_vectors  
+            self.freqs = list(range(-self.n_vectors // 2, self.n_vectors // 2 + 1))
+            self.freqs.sort(key=abs)
+        
         coefficients = self.get_fourier_coefs(path)
         
         vectors = VGroup()
@@ -137,89 +145,118 @@ class FourierTransform(FourierSceneAbstract):
     def __init__(self):
         super().__init__()
 
-    def get_tex_symbol(self, symbol, color):
-        symbol = Tex(symbol, stroke_width=1, fill_opacity=1, height=4)
-
-        if color is not None:
-            symbol.set_color(color)
-
-        return symbol
-
-    def get_path_from_symbol(self, symbol):
-        return symbol.family_members_with_points()[0]
+    def get_path_from_image(self, image):
+        return image.family_members_with_points()[0]
 
     def construct(self):
-        # Symbols to draw.
-        symbol = self.get_tex_symbol("$\\pi$", RED)
-
-        # Symbol path to trace.
-        symbol_path = self.get_path_from_symbol(symbol)
-
-        # Fourier series for symbol1
-        vectors = self.get_fourier_vectors(symbol_path)
-        circles = self.get_circles(vectors)
-        drawn_path = self.get_drawn_path(vectors).set_color(RED)
-
-        # Camera updater
-        last_vector = vectors[-1]
-
-        # Scene start
-        self.wait(1)
+        image1 = SVGMobject("om_symbol.svg", height=4)
+        image2 = SVGMobject("chandrabindu_curve.svg", height=1)
+        image3 = SVGMobject("chandrabindu_circle.svg", height=0.5)
         
-        # Create a list for arrow animations
-        arrow_animations = []
-        for arrow in vectors:
-            arrow_animations.append(GrowArrow(arrow))
+        image2.shift(2.2*UP+0.8*RIGHT)
+        image3.shift(2.8*UP+0.8*RIGHT)
 
-        # Create a list for circle animations
-        circle_animations = []
-        for circle in circles:
-            circle_animations.append(Create(circle))
+        image1_path = self.get_path_from_image(image1)
+        image2_path = self.get_path_from_image(image2)
+        image3_path = self.get_path_from_image(image3)
 
-        # Execute all create animations.
+        vectors1 = self.get_fourier_vectors(image1_path, num_vectors=60)
+        circles1 = self.get_circles(vectors1)
+        drawn_path1 = self.get_drawn_path(vectors1).set_color(RED)
+
+        vectors2 = self.get_fourier_vectors(image2_path, num_vectors=15)
+        circles2 = self.get_circles(vectors2)
+        drawn_path2 = self.get_drawn_path(vectors2).set_color(BLUE)
+
+        vectors3 = self.get_fourier_vectors(image3_path, num_vectors=35)
+        circles3 = self.get_circles(vectors3)
+        drawn_path3 = self.get_drawn_path(vectors3).set_color(BLUE)
+
+        self.wait(1)
+
+        arrow_animations1 = [GrowArrow(arrow1) for arrow1 in vectors1]
+        circle_animations1 = [Create(circle1) for circle1 in circles1]
+        arrow_animations2 = [GrowArrow(arrow2) for arrow2 in vectors2]
+        circle_animations2 = [Create(circle2) for circle2 in circles2]
+        arrow_animations3 = [GrowArrow(arrow3) for arrow3 in vectors3]
+        circle_animations3 = [Create(circle3) for circle3 in circles3]
+
         self.play(
-            *arrow_animations,
-            *circle_animations,
+            *arrow_animations1,
+            *circle_animations1,
+            *arrow_animations2,
+            *circle_animations2,
+            *arrow_animations3,
+            *circle_animations3,
             run_time=2.5,
         )
 
-        # Add objects to scene
-        self.add( 
-            vectors,
-            circles,
-            drawn_path.set_stroke(width = self.drawn_path_stroke_width)
+        self.add(
+            vectors1, 
+            circles1,
+            drawn_path1.set_stroke(width=self.drawn_path_stroke_width),
+            vectors2, 
+            circles2,
+            drawn_path2.set_stroke(width=self.drawn_path_stroke_width),
+            vectors3, 
+            circles3,
+            drawn_path3.set_stroke(width=self.drawn_path_stroke_width),
         )
- 
-        # Add updaters and start vector clock
-        vectors.add_updater(self.update_vectors)
-        circles.add_updater(self.update_circles)
-        drawn_path.add_updater(self.update_path)
+
+        vectors1.add_updater(self.update_vectors)
+        circles1.add_updater(self.update_circles)
+        drawn_path1.add_updater(self.update_path)
+
+        vectors2.add_updater(self.update_vectors)
+        circles2.add_updater(self.update_circles)
+        drawn_path2.add_updater(self.update_path)
+
+        vectors3.add_updater(self.update_vectors)
+        circles3.add_updater(self.update_circles)
+        drawn_path3.add_updater(self.update_path)
+
         self.toggle_vector_clock(start=True)
 
-        self.play(self.slow_factor_tracker.animate.set_value(0.5), run_time = self.cycle_seconds)
+        self.play(self.slow_factor_tracker.animate.set_value(0.5), run_time=self.cycle_seconds)
         self.wait(1 * self.cycle_seconds)
 
         self.wait(0.8 * self.cycle_seconds)
-        self.play(self.slow_factor_tracker.animate.set_value(0), run_time = 0.5 * self.cycle_seconds)
-        
-        # Remove updaters so can animate.
-        self.toggle_vector_clock(start=False)
-        drawn_path.clear_updaters()
-        vectors.clear_updaters()
-        circles.clear_updaters()
+        self.play(self.slow_factor_tracker.animate.set_value(0), run_time=0.5 * self.cycle_seconds)
 
-        # Create a single list that contains all the VMobjects to be uncreated
+        self.toggle_vector_clock(start=False)
+
+        drawn_path1.clear_updaters()
+        vectors1.clear_updaters()
+        circles1.clear_updaters()
+
+        drawn_path2.clear_updaters()
+        vectors2.clear_updaters()
+        circles2.clear_updaters()
+
+        drawn_path3.clear_updaters()
+        vectors3.clear_updaters()
+        circles3.clear_updaters()
+
         uncreate_animations = []
 
-        # Add uncreate animations for all objects in vectors
-        for arrow in vectors:
-            uncreate_animations.append(Uncreate(arrow))
+        for arrow1 in vectors1:
+            uncreate_animations.append(Uncreate(arrow1))
 
-        # Add uncreate animations for all objects in circles
-        for circle in circles:
-            uncreate_animations.append(Uncreate(circle))
+        for circle1 in circles1:
+            uncreate_animations.append(Uncreate(circle1))
 
-        # Execute all uncreate animations.
+        for arrow2 in vectors2:
+            uncreate_animations.append(Uncreate(arrow2))
+
+        for circle2 in circles2:
+            uncreate_animations.append(Uncreate(circle2))
+
+        for arrow3 in vectors3:
+            uncreate_animations.append(Uncreate(arrow3))
+
+        for circle3 in circles3:
+            uncreate_animations.append(Uncreate(circle3))
+
         self.play(
             *uncreate_animations,
             run_time=2.5,
