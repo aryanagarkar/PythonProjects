@@ -290,13 +290,15 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         return image.family_members_with_points()[0]
 
     def construct(self):
-        image1 = SVGMobject("swastika.svg", height=4)
+        INDIAN_FLAG_SAFFRON = "#FF671F"
+        RED_PINK = "#CD5C5C"
+        image1 = SVGMobject("swastika.svg", height=6)
         
         image1_path = self.get_path_from_image(image1)
 
         vectors1 = self.get_fourier_vectors(image1_path, num_vectors=190)
         circles1 = self.get_circles(vectors1)
-        drawn_path1 = self.get_drawn_path(vectors1).set_color(GREEN)
+        drawn_path1 = self.get_drawn_path(vectors1).set_color(INDIAN_FLAG_SAFFRON)
 
         self.wait(1)
 
@@ -348,19 +350,31 @@ class SwastikaFourierTransform(FourierSceneAbstract):
             run_time=2.5,
         )
 
+        self.wait(0.5)
+
+        # Create a filled path after the tracing
+        pencil_fill = drawn_path1.copy().set_stroke(width=0).set_fill(INDIAN_FLAG_SAFFRON, opacity=1)
+
+        # Add the fill to the scene
+        self.add(pencil_fill)
+
+        # Create the "coloring in" effect
+        # Set the fill to start as empty, using a reveal animation
+        pencil_fill.set_fill(opacity=0)  # Start with no fill
+        self.play(pencil_fill.animate.set_fill(opacity=1), run_time=2.5)  # Gradually reveal the fill
         self.wait(1)
 
         self.reset_state()
 
-        image2 = SVGMobject("swastikaDot.svg", height=0.35)
+        image2 = SVGMobject("swastikaDot.svg", height=1)
 
-        image2.shift(0.75*UP+0.75*RIGHT)
+        image2.shift(UP*1.5+RIGHT*1.5)
 
         image2_path = self.get_path_from_image(image2)
 
         vectors2 = self.get_fourier_vectors(image2_path, num_vectors=2)
         circles2 = self.get_circles(vectors2)
-        drawn_path2 = self.get_drawn_path(vectors2).set_color(BLUE)
+        drawn_path2 = self.get_drawn_path(vectors2).set_color(RED_PINK)
 
         arrow_animations2 = [GrowArrow(arrow2) for arrow2 in vectors2]
         circle_animations2 = [Create(circle2) for circle2 in circles2]
@@ -412,15 +426,15 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
         self.reset_state()
 
-        image3 = SVGMobject("swastikaDot.svg", height=0.35)
+        image3 = SVGMobject("swastikaDot.svg", height=1)
 
-        image3.shift(0.75*UP+0.75*LEFT)
+        image3.shift(UP+LEFT)
 
         image3_path = self.get_path_from_image(image3)
 
         vectors3 = self.get_fourier_vectors(image3_path, num_vectors=2)
         circles3 = self.get_circles(vectors3)
-        drawn_path3 = self.get_drawn_path(vectors3).set_color(BLUE)
+        drawn_path3 = self.get_drawn_path(vectors3).set_color(RED_PINK)
 
         arrow_animations3 = [GrowArrow(arrow3) for arrow3 in vectors3]
         circle_animations3 = [Create(circle3) for circle3 in circles3]
@@ -472,15 +486,15 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
         self.reset_state()
 
-        image4 = SVGMobject("swastikaDot.svg", height=0.35)
+        image4 = SVGMobject("swastikaDot.svg", height=1)
 
-        image4.shift(0.75*DOWN+0.75*RIGHT)
+        image4.shift(DOWN+RIGHT)
 
         image4_path = self.get_path_from_image(image4)
 
         vectors4 = self.get_fourier_vectors(image4_path, num_vectors=2)
         circles4 = self.get_circles(vectors4)
-        drawn_path4 = self.get_drawn_path(vectors4).set_color(BLUE)
+        drawn_path4 = self.get_drawn_path(vectors4).set_color(RED_PINK)
 
         arrow_animations4 = [GrowArrow(arrow4) for arrow4 in vectors4]
         circle_animations4 = [Create(circle4) for circle4 in circles4]
@@ -532,15 +546,15 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         
         self.reset_state()
 
-        image5 = SVGMobject("swastikaDot.svg", height=0.35)
+        image5 = SVGMobject("swastikaDot.svg", height=1)
 
-        image5.shift(0.75*DOWN+0.75*LEFT)
+        image5.shift(DOWN+LEFT)
 
         image5_path = self.get_path_from_image(image5)
 
         vectors5 = self.get_fourier_vectors(image5_path, num_vectors=2)
         circles5 = self.get_circles(vectors5)
-        drawn_path5 = self.get_drawn_path(vectors5).set_color(BLUE)
+        drawn_path5 = self.get_drawn_path(vectors5).set_color(RED_PINK)
 
         arrow_animations5 = [GrowArrow(arrow5) for arrow5 in vectors5]
         circle_animations5 = [Create(circle5) for circle5 in circles5]
