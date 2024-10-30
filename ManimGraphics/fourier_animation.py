@@ -45,6 +45,24 @@ class FourierSceneAbstract(ZoomedScene):
         else:
             self.vector_clock.clear_updaters()
 
+    def reset_state(self):
+        # Stop the vector clock and reset its value
+        self.toggle_vector_clock(start=False)
+        self.vector_clock.set_value(0)
+
+        # Reset slow factor tracker
+        self.slow_factor_tracker.set_value(0)
+
+        # Clear updaters from any other objects
+        for obj in self.mobjects:
+            obj.clear_updaters()
+
+        # Optionally reset any other class attributes that might have changed
+        self.n_vectors = 60
+        self.freqs = list(range(-self.n_vectors // 2, self.n_vectors // 2 + 1))
+        self.freqs.sort(key=abs)
+
+
     def get_fourier_coefs(self, path):
         dt = 1 / self.path_n_samples
         t_range = np.linspace(0, 1, self.path_n_samples)
@@ -141,7 +159,7 @@ class FourierSceneAbstract(ZoomedScene):
             
             subpath.set_stroke(width=width)  # Update the stroke width of the subpath
 
-class FourierTransform(FourierSceneAbstract):
+class OmFourierTransform(FourierSceneAbstract):
     def __init__(self):
         super().__init__()
 
@@ -259,6 +277,314 @@ class FourierTransform(FourierSceneAbstract):
 
         self.play(
             *uncreate_animations,
+            run_time=2.5,
+        )
+
+        self.wait(3)
+
+class SwastikaFourierTransform(FourierSceneAbstract):
+    def __init__(self):
+        super().__init__()
+
+    def get_path_from_image(self, image):
+        return image.family_members_with_points()[0]
+
+    def construct(self):
+        image1 = SVGMobject("swastika.svg", height=4)
+        
+        image1_path = self.get_path_from_image(image1)
+
+        vectors1 = self.get_fourier_vectors(image1_path, num_vectors=190)
+        circles1 = self.get_circles(vectors1)
+        drawn_path1 = self.get_drawn_path(vectors1).set_color(GREEN)
+
+        self.wait(1)
+
+        arrow_animations1 = [GrowArrow(arrow1) for arrow1 in vectors1]
+        circle_animations1 = [Create(circle1) for circle1 in circles1]
+
+        self.play(
+            *arrow_animations1,
+            *circle_animations1,
+            run_time=2.5,
+        )
+
+        self.wait(0.1)
+
+        self.add(
+            vectors1, 
+            circles1,
+            drawn_path1.set_stroke(width=self.drawn_path_stroke_width),
+        )
+
+        vectors1.add_updater(self.update_vectors)
+        circles1.add_updater(self.update_circles)
+        drawn_path1.add_updater(self.update_path)
+
+        self.toggle_vector_clock(start=True)
+
+        self.play(self.slow_factor_tracker.animate.set_value(1.5), run_time=self.cycle_seconds)
+        self.wait(1 * self.cycle_seconds)
+
+        self.wait(0.8 * self.cycle_seconds)
+        self.play(self.slow_factor_tracker.animate.set_value(0), run_time=0.5 * self.cycle_seconds)
+
+        self.toggle_vector_clock(start=False)
+
+        drawn_path1.clear_updaters()
+        vectors1.clear_updaters()
+        circles1.clear_updaters()
+
+        uncreate_animations1 = []
+
+        for arrow1 in vectors1:
+            uncreate_animations1.append(Uncreate(arrow1))
+
+        for circle1 in circles1:
+            uncreate_animations1.append(Uncreate(circle1))
+
+        self.play(
+            *uncreate_animations1,
+            run_time=2.5,
+        )
+
+        self.wait(1)
+
+        self.reset_state()
+
+        image2 = SVGMobject("swastikaDot.svg", height=0.35)
+
+        image2.shift(0.75*UP+0.75*RIGHT)
+
+        image2_path = self.get_path_from_image(image2)
+
+        vectors2 = self.get_fourier_vectors(image2_path, num_vectors=2)
+        circles2 = self.get_circles(vectors2)
+        drawn_path2 = self.get_drawn_path(vectors2).set_color(BLUE)
+
+        arrow_animations2 = [GrowArrow(arrow2) for arrow2 in vectors2]
+        circle_animations2 = [Create(circle2) for circle2 in circles2]
+
+        self.play(
+            *arrow_animations2,
+            *circle_animations2,
+            run_time=2.5,
+        )
+
+        self.add(
+            vectors2, 
+            circles2,
+            drawn_path2.set_stroke(width=self.drawn_path_stroke_width),
+        )
+
+        vectors2.add_updater(self.update_vectors)
+        circles2.add_updater(self.update_circles)
+        drawn_path2.add_updater(self.update_path)
+ 
+        self.toggle_vector_clock(start=True)
+
+        self.play(self.slow_factor_tracker.animate.set_value(1.5), run_time=self.cycle_seconds)
+        self.wait(1 * self.cycle_seconds)
+
+        self.wait(0.8 * self.cycle_seconds)
+        self.play(self.slow_factor_tracker.animate.set_value(0), run_time=0.5 * self.cycle_seconds)
+
+        self.toggle_vector_clock(start=False)
+
+        drawn_path2.clear_updaters()
+        vectors2.clear_updaters()
+        circles2.clear_updaters()
+
+        uncreate_animations2 = []
+
+        for arrow2 in vectors2:
+            uncreate_animations2.append(Uncreate(arrow2))
+
+        for circle2 in circles2:
+            uncreate_animations2.append(Uncreate(circle2))
+
+        self.play(
+            *uncreate_animations2,
+            run_time=2.5,
+        )
+
+        self.wait(1)
+
+        self.reset_state()
+
+        image3 = SVGMobject("swastikaDot.svg", height=0.35)
+
+        image3.shift(0.75*UP+0.75*LEFT)
+
+        image3_path = self.get_path_from_image(image3)
+
+        vectors3 = self.get_fourier_vectors(image3_path, num_vectors=2)
+        circles3 = self.get_circles(vectors3)
+        drawn_path3 = self.get_drawn_path(vectors3).set_color(BLUE)
+
+        arrow_animations3 = [GrowArrow(arrow3) for arrow3 in vectors3]
+        circle_animations3 = [Create(circle3) for circle3 in circles3]
+
+        self.play(
+            *arrow_animations3,
+            *circle_animations3,
+            run_time=2.5,
+        )
+
+        self.add(
+            vectors3, 
+            circles3,
+            drawn_path3.set_stroke(width=self.drawn_path_stroke_width),
+        )
+
+        vectors3.add_updater(self.update_vectors)
+        circles3.add_updater(self.update_circles)
+        drawn_path3.add_updater(self.update_path)
+ 
+        self.toggle_vector_clock(start=True)
+
+        self.play(self.slow_factor_tracker.animate.set_value(1.5), run_time=self.cycle_seconds)
+        self.wait(1 * self.cycle_seconds)
+
+        self.wait(0.8 * self.cycle_seconds)
+        self.play(self.slow_factor_tracker.animate.set_value(0), run_time=0.5 * self.cycle_seconds)
+
+        self.toggle_vector_clock(start=False)
+
+        drawn_path3.clear_updaters()
+        vectors3.clear_updaters()
+        circles3.clear_updaters()
+
+        uncreate_animations3 = []
+
+        for arrow3 in vectors3:
+            uncreate_animations3.append(Uncreate(arrow3))
+
+        for circle3 in circles3:
+            uncreate_animations3.append(Uncreate(circle3))
+
+        self.play(
+            *uncreate_animations3,
+            run_time=2.5,
+        )
+
+        self.wait(1)
+
+        self.reset_state()
+
+        image4 = SVGMobject("swastikaDot.svg", height=0.35)
+
+        image4.shift(0.75*DOWN+0.75*RIGHT)
+
+        image4_path = self.get_path_from_image(image4)
+
+        vectors4 = self.get_fourier_vectors(image4_path, num_vectors=2)
+        circles4 = self.get_circles(vectors4)
+        drawn_path4 = self.get_drawn_path(vectors4).set_color(BLUE)
+
+        arrow_animations4 = [GrowArrow(arrow4) for arrow4 in vectors4]
+        circle_animations4 = [Create(circle4) for circle4 in circles4]
+
+        self.play(
+            *arrow_animations4,
+            *circle_animations4,
+            run_time=2.5,
+        )
+
+        self.add(
+            vectors4, 
+            circles4,
+            drawn_path4.set_stroke(width=self.drawn_path_stroke_width),
+        )
+
+        vectors4.add_updater(self.update_vectors)
+        circles4.add_updater(self.update_circles)
+        drawn_path4.add_updater(self.update_path)
+ 
+        self.toggle_vector_clock(start=True)
+
+        self.play(self.slow_factor_tracker.animate.set_value(1.5), run_time=self.cycle_seconds)
+        self.wait(1 * self.cycle_seconds)
+
+        self.wait(0.8 * self.cycle_seconds)
+        self.play(self.slow_factor_tracker.animate.set_value(0), run_time=0.5 * self.cycle_seconds)
+
+        self.toggle_vector_clock(start=False)
+
+        drawn_path4.clear_updaters()
+        vectors4.clear_updaters()
+        circles4.clear_updaters()
+
+        uncreate_animations4 = []
+
+        for arrow4 in vectors4:
+            uncreate_animations4.append(Uncreate(arrow4))
+
+        for circle4 in circles4:
+            uncreate_animations4.append(Uncreate(circle4))
+
+        self.play(
+            *uncreate_animations4,
+            run_time=2.5,
+        )
+
+        self.wait(1)
+        
+        self.reset_state()
+
+        image5 = SVGMobject("swastikaDot.svg", height=0.35)
+
+        image5.shift(0.75*DOWN+0.75*LEFT)
+
+        image5_path = self.get_path_from_image(image5)
+
+        vectors5 = self.get_fourier_vectors(image5_path, num_vectors=2)
+        circles5 = self.get_circles(vectors5)
+        drawn_path5 = self.get_drawn_path(vectors5).set_color(BLUE)
+
+        arrow_animations5 = [GrowArrow(arrow5) for arrow5 in vectors5]
+        circle_animations5 = [Create(circle5) for circle5 in circles5]
+
+        self.play(
+            *arrow_animations5,
+            *circle_animations5,
+            run_time=2.5,
+        )
+
+        self.add(
+            vectors5, 
+            circles5,
+            drawn_path5.set_stroke(width=self.drawn_path_stroke_width),
+        )
+
+        vectors5.add_updater(self.update_vectors)
+        circles5.add_updater(self.update_circles)
+        drawn_path5.add_updater(self.update_path)
+ 
+        self.toggle_vector_clock(start=True)
+
+        self.play(self.slow_factor_tracker.animate.set_value(1.5), run_time=self.cycle_seconds)
+        self.wait(1 * self.cycle_seconds)
+
+        self.wait(0.8 * self.cycle_seconds)
+        self.play(self.slow_factor_tracker.animate.set_value(0), run_time=0.5 * self.cycle_seconds)
+
+        self.toggle_vector_clock(start=False)
+
+        drawn_path5.clear_updaters()
+        vectors5.clear_updaters()
+        circles5.clear_updaters()
+
+        uncreate_animations5 = []
+
+        for arrow5 in vectors5:
+            uncreate_animations5.append(Uncreate(arrow5))
+
+        for circle5 in circles5:
+            uncreate_animations5.append(Uncreate(circle5))
+
+        self.play(
+            *uncreate_animations5,
             run_time=2.5,
         )
 
