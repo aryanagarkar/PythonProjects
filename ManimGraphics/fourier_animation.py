@@ -325,7 +325,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
         self.toggle_vector_clock(start=True)
 
-        self.play(self.slow_factor_tracker.animate.set_value(1.5), run_time=self.cycle_seconds)
+        self.play(self.slow_factor_tracker.animate.set_value(1.3), run_time=self.cycle_seconds)
         self.wait(1 * self.cycle_seconds)
 
         self.wait(0.8 * self.cycle_seconds)
@@ -352,7 +352,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
         self.wait(0.5)
 
-        # Create a filled path after the tracing
+        """# Create a filled path after the tracing
         pencil_fill = drawn_path1.copy().set_stroke(width=0).set_fill(INDIAN_FLAG_SAFFRON, opacity=1)
 
         # Add the fill to the scene
@@ -362,13 +362,15 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         # Set the fill to start as empty, using a reveal animation
         pencil_fill.set_fill(opacity=0)  # Start with no fill
         self.play(pencil_fill.animate.set_fill(opacity=1), run_time=2.5)  # Gradually reveal the fill
+        """
+        
         self.wait(1)
 
         self.reset_state()
 
-        image2 = SVGMobject("swastikaDot.svg", height=1)
+        image2 = SVGMobject("swastikaDot.svg", height=0.5)
 
-        image2.shift(UP*1.5+RIGHT*1.5)
+        image2.shift(UP+RIGHT)
 
         image2_path = self.get_path_from_image(image2)
 
@@ -422,11 +424,22 @@ class SwastikaFourierTransform(FourierSceneAbstract):
             run_time=2.5,
         )
 
+        # Create a filled path after the tracing
+        pencil_fill = drawn_path2.copy().set_stroke(width=0).set_fill(RED_PINK, opacity=1)
+
+        # Add the fill to the scene
+        self.add(pencil_fill)
+
+        # Create the "coloring in" effect
+        # Set the fill to start as empty, using a reveal animation
+        pencil_fill.set_fill(opacity=0)  # Start with no fill
+        self.play(pencil_fill.animate.set_fill(opacity=1), run_time=2.5)  # Gradually reveal the fill
+
         self.wait(1)
 
         self.reset_state()
 
-        image3 = SVGMobject("swastikaDot.svg", height=1)
+        image3 = SVGMobject("swastikaDot.svg", height=0.5)
 
         image3.shift(UP+LEFT)
 
@@ -486,7 +499,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
         self.reset_state()
 
-        image4 = SVGMobject("swastikaDot.svg", height=1)
+        image4 = SVGMobject("swastikaDot.svg", height=0.5)
 
         image4.shift(DOWN+RIGHT)
 
@@ -546,7 +559,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         
         self.reset_state()
 
-        image5 = SVGMobject("swastikaDot.svg", height=1)
+        image5 = SVGMobject("swastikaDot.svg", height=0.5)
 
         image5.shift(DOWN+LEFT)
 
