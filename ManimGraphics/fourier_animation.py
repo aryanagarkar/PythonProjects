@@ -428,7 +428,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         self.wait(0.5) 
 
         # Initially set the fill opacity to 0 to make it invisible
-        image2.set_fill(opacity=0)
+        image2.set_fill(color=INDIAN_FLAG_SAFFRON, opacity=0)
         self.add(image2)
 
         # Fade in the filled shape over a specified duration
@@ -501,7 +501,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         self.wait(0.5)
 
         # Initially set the fill opacity to 0 to make it invisible
-        image3.set_fill(opacity=0)
+        image3.set_fill(color=INDIAN_FLAG_SAFFRON, opacity=0)
         self.add(image3)
 
         # Fade in the filled shape over a specified duration
@@ -574,7 +574,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         self.wait(0.5)
 
         # Initially set the fill opacity to 0 to make it invisible
-        image4.set_fill(opacity=0)
+        image4.set_fill(color=INDIAN_FLAG_SAFFRON, opacity=0)
         self.add(image4)
 
         # Fade in the filled shape over a specified duration
@@ -649,7 +649,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         image5.set_fill(INDIAN_FLAG_SAFFRON, opacity=1).set_stroke(width=0)
 
         # Initially set the fill opacity to 0 to make it invisible
-        image5.set_fill(opacity=0)
+        image5.set_fill(color=INDIAN_FLAG_SAFFRON, opacity=0)
 
         self.add(image5)
 
