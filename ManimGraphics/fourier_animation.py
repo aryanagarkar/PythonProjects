@@ -292,13 +292,15 @@ class SwastikaFourierTransform(FourierSceneAbstract):
     def construct(self):
         INDIAN_FLAG_SAFFRON = "#FF671F"
         RED_PINK = "#CD5C5C"
+        RED = "#C00000"
+        
         image1 = SVGMobject("swastika.svg", height=6)
         
         image1_path = self.get_path_from_image(image1)
 
         vectors1 = self.get_fourier_vectors(image1_path, num_vectors=190)
         circles1 = self.get_circles(vectors1)
-        drawn_path1 = self.get_drawn_path(vectors1).set_color(INDIAN_FLAG_SAFFRON)
+        drawn_path1 = self.get_drawn_path(vectors1).set_color(RED)
 
         self.wait(1)
 
@@ -352,40 +354,20 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
         self.wait(0.5)
 
-        """# Create a filled path after the tracing
-        pencil_fill = drawn_path1.copy().set_stroke(width=0).set_fill(INDIAN_FLAG_SAFFRON, opacity=1)
+        # Initially set the fill opacity to 0 to make it invisible
+        image1.set_fill(opacity=0)
+        self.add(image1)
 
-        # Add the fill to the scene
-        self.add(pencil_fill)
+        # Fade in the filled shape over a specified duration
+        self.play(
+            image1.animate.set_fill(opacity=1),  # Animate opacity from 0 to 1
+            run_time=3  # Adjust run_time for the desired speed of the fade
+        )
 
-        # Create the "coloring in" effect
-        # Set the fill to start as empty, using a reveal animation
-        pencil_fill.set_fill(opacity=0)  # Start with no fill
-        self.play(pencil_fill.animate.set_fill(opacity=1), run_time=2.5)  # Gradually reveal the fill
-        """
-        
         self.wait(1)
 
-        image1.set_fill(INDIAN_FLAG_SAFFRON, opacity=1)
-        image1.set_stroke(width=0)  # Remove any border
-        
-        # Create a mask shape to animate the fill effect
-        mask1 = Rectangle(width=1, height=6, fill_color=RED_PINK, fill_opacity=1)
-        mask1.move_to(image1.get_left())  # Start position of the mask
-
-        # Add the mask to the scene
-        self.add(mask1)
-
-        # Animate the mask moving and revealing the fill
-        self.play(mask1.animate.set_width(image1.get_width()).shift(RIGHT * (image1.get_width() / 2)), run_time=2)
-
-        # Now gradually increase the opacity of the filled shape
-        self.play(image1.animate.set_fill(RED_PINK, opacity=1), run_time=2)
-
-        # Optional: Clean up the mask
-        self.remove(mask1)
-
         self.reset_state()
+
 
         image2 = SVGMobject("swastikaDot.svg", height=0.5)
 
@@ -395,7 +377,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
         vectors2 = self.get_fourier_vectors(image2_path, num_vectors=2)
         circles2 = self.get_circles(vectors2)
-        drawn_path2 = self.get_drawn_path(vectors2).set_color(RED_PINK)
+        drawn_path2 = self.get_drawn_path(vectors2).set_color(INDIAN_FLAG_SAFFRON)
 
         arrow_animations2 = [GrowArrow(arrow2) for arrow2 in vectors2]
         circle_animations2 = [Create(circle2) for circle2 in circles2]
@@ -443,18 +425,22 @@ class SwastikaFourierTransform(FourierSceneAbstract):
             run_time=2.5,
         )
 
-        image2.set_fill(RED_PINK, opacity=1)
-        image2.set_stroke(width=0)  # Remove any border
+        self.wait(0.5) 
 
-        # Position filled shape where your drawn path is
-        image2.move_to(drawn_path2.get_center())
-
-        # Add the filled shape to the scene
+        # Initially set the fill opacity to 0 to make it invisible
+        image2.set_fill(opacity=0)
         self.add(image2)
+
+        # Fade in the filled shape over a specified duration
+        self.play(
+            image2.animate.set_fill(opacity=1),  # Animate opacity from 0 to 1
+            run_time=3  # Adjust run_time for the desired speed of the fade
+        )
 
         self.wait(1)
 
         self.reset_state()
+
 
         image3 = SVGMobject("swastikaDot.svg", height=0.5)
 
@@ -464,7 +450,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
         vectors3 = self.get_fourier_vectors(image3_path, num_vectors=2)
         circles3 = self.get_circles(vectors3)
-        drawn_path3 = self.get_drawn_path(vectors3).set_color(RED_PINK)
+        drawn_path3 = self.get_drawn_path(vectors3).set_color(INDIAN_FLAG_SAFFRON)
 
         arrow_animations3 = [GrowArrow(arrow3) for arrow3 in vectors3]
         circle_animations3 = [Create(circle3) for circle3 in circles3]
@@ -512,19 +498,22 @@ class SwastikaFourierTransform(FourierSceneAbstract):
             run_time=2.5,
         )
 
-        image3.set_fill(RED_PINK, opacity=1)
-        image3.set_stroke(width=0)  # Remove any border
+        self.wait(0.5)
 
-        # Position filled shape where your drawn path is
-        image3.move_to(drawn_path3.get_center())
-
-        # Add the filled shape to the scene
+        # Initially set the fill opacity to 0 to make it invisible
+        image3.set_fill(opacity=0)
         self.add(image3)
-        
+
+        # Fade in the filled shape over a specified duration
+        self.play(
+            image3.animate.set_fill(opacity=1),  # Animate opacity from 0 to 1
+            run_time=3  # Adjust run_time for the desired speed of the fade
+        )
 
         self.wait(1)
 
         self.reset_state()
+
 
         image4 = SVGMobject("swastikaDot.svg", height=0.5)
 
@@ -534,7 +523,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
         vectors4 = self.get_fourier_vectors(image4_path, num_vectors=2)
         circles4 = self.get_circles(vectors4)
-        drawn_path4 = self.get_drawn_path(vectors4).set_color(RED_PINK)
+        drawn_path4 = self.get_drawn_path(vectors4).set_color(INDIAN_FLAG_SAFFRON)
 
         arrow_animations4 = [GrowArrow(arrow4) for arrow4 in vectors4]
         circle_animations4 = [Create(circle4) for circle4 in circles4]
@@ -582,18 +571,22 @@ class SwastikaFourierTransform(FourierSceneAbstract):
             run_time=2.5,
         )
 
-        image4.set_fill(RED_PINK, opacity=1)
-        image4.set_stroke(width=0)  # Remove any border
+        self.wait(0.5)
 
-        # Position filled shape where your drawn path is
-        image4.move_to(drawn_path4.get_center())
-
-        # Add the filled shape to the scene
+        # Initially set the fill opacity to 0 to make it invisible
+        image4.set_fill(opacity=0)
         self.add(image4)
-        
+
+        # Fade in the filled shape over a specified duration
+        self.play(
+            image4.animate.set_fill(opacity=1),  # Animate opacity from 0 to 1
+            run_time=3  # Adjust run_time for the desired speed of the fade
+        )
+
         self.wait(1)
         
         self.reset_state()
+
 
         image5 = SVGMobject("swastikaDot.svg", height=0.5)
 
@@ -603,7 +596,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
         vectors5 = self.get_fourier_vectors(image5_path, num_vectors=2)
         circles5 = self.get_circles(vectors5)
-        drawn_path5 = self.get_drawn_path(vectors5).set_color(RED_PINK)
+        drawn_path5 = self.get_drawn_path(vectors5).set_color(INDIAN_FLAG_SAFFRON)
 
         arrow_animations5 = [GrowArrow(arrow5) for arrow5 in vectors5]
         circle_animations5 = [Create(circle5) for circle5 in circles5]
@@ -651,13 +644,19 @@ class SwastikaFourierTransform(FourierSceneAbstract):
             run_time=2.5,
         )
 
-        image5.set_fill(RED_PINK, opacity=1)
-        image5.set_stroke(width=0)  # Remove any border
+        self.wait(0.5)
 
-        # Position filled shape where your drawn path is
-        image5.move_to(drawn_path5.get_center())
+        image5.set_fill(INDIAN_FLAG_SAFFRON, opacity=1).set_stroke(width=0)
 
-        # Add the filled shape to the scene
+        # Initially set the fill opacity to 0 to make it invisible
+        image5.set_fill(opacity=0)
+
         self.add(image5)
+
+        # Fade in the filled shape over a specified duration
+        self.play(
+            image5.animate.set_fill(opacity=1),  # Animate opacity from 0 to 1
+            run_time=3  # Adjust run_time for the desired speed of the fade
+        )
 
         self.wait(3)
