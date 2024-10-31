@@ -366,6 +366,25 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         
         self.wait(1)
 
+        image1.set_fill(INDIAN_FLAG_SAFFRON, opacity=1)
+        image1.set_stroke(width=0)  # Remove any border
+        
+        # Create a mask shape to animate the fill effect
+        mask1 = Rectangle(width=1, height=6, fill_color=RED_PINK, fill_opacity=1)
+        mask1.move_to(image1.get_left())  # Start position of the mask
+
+        # Add the mask to the scene
+        self.add(mask1)
+
+        # Animate the mask moving and revealing the fill
+        self.play(mask1.animate.set_width(image1.get_width()).shift(RIGHT * (image1.get_width() / 2)), run_time=2)
+
+        # Now gradually increase the opacity of the filled shape
+        self.play(image1.animate.set_fill(RED_PINK, opacity=1), run_time=2)
+
+        # Optional: Clean up the mask
+        self.remove(mask1)
+
         self.reset_state()
 
         image2 = SVGMobject("swastikaDot.svg", height=0.5)
@@ -424,16 +443,14 @@ class SwastikaFourierTransform(FourierSceneAbstract):
             run_time=2.5,
         )
 
-        # Create a filled path after the tracing
-        pencil_fill = drawn_path2.copy().set_stroke(width=0).set_fill(RED_PINK, opacity=1)
+        image2.set_fill(RED_PINK, opacity=1)
+        image2.set_stroke(width=0)  # Remove any border
 
-        # Add the fill to the scene
-        self.add(pencil_fill)
+        # Position filled shape where your drawn path is
+        image2.move_to(drawn_path2.get_center())
 
-        # Create the "coloring in" effect
-        # Set the fill to start as empty, using a reveal animation
-        pencil_fill.set_fill(opacity=0)  # Start with no fill
-        self.play(pencil_fill.animate.set_fill(opacity=1), run_time=2.5)  # Gradually reveal the fill
+        # Add the filled shape to the scene
+        self.add(image2)
 
         self.wait(1)
 
@@ -495,6 +512,16 @@ class SwastikaFourierTransform(FourierSceneAbstract):
             run_time=2.5,
         )
 
+        image3.set_fill(RED_PINK, opacity=1)
+        image3.set_stroke(width=0)  # Remove any border
+
+        # Position filled shape where your drawn path is
+        image3.move_to(drawn_path3.get_center())
+
+        # Add the filled shape to the scene
+        self.add(image3)
+        
+
         self.wait(1)
 
         self.reset_state()
@@ -555,6 +582,15 @@ class SwastikaFourierTransform(FourierSceneAbstract):
             run_time=2.5,
         )
 
+        image4.set_fill(RED_PINK, opacity=1)
+        image4.set_stroke(width=0)  # Remove any border
+
+        # Position filled shape where your drawn path is
+        image4.move_to(drawn_path4.get_center())
+
+        # Add the filled shape to the scene
+        self.add(image4)
+        
         self.wait(1)
         
         self.reset_state()
@@ -614,5 +650,14 @@ class SwastikaFourierTransform(FourierSceneAbstract):
             *uncreate_animations5,
             run_time=2.5,
         )
+
+        image5.set_fill(RED_PINK, opacity=1)
+        image5.set_stroke(width=0)  # Remove any border
+
+        # Position filled shape where your drawn path is
+        image5.move_to(drawn_path5.get_center())
+
+        # Add the filled shape to the scene
+        self.add(image5)
 
         self.wait(3)
