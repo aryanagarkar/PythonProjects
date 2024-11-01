@@ -26,7 +26,7 @@ class FourierSceneAbstract(ZoomedScene):
         self.n_vectors = 60   
         self.cycle_seconds = 5
         self.parametric_func_step = 0.001   
-        self.drawn_path_stroke_width = 5
+        self.drawn_path_stroke_width = 8
         self.path_n_samples = 1000    
         self.freqs = list(range(-self.n_vectors // 2, self.n_vectors // 2 + 1, 1))
         self.freqs.sort(key=abs)
@@ -291,16 +291,49 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
     def construct(self):
         INDIAN_FLAG_SAFFRON = "#FF671F"
-        RED_PINK = "#CD5C5C"
         RED = "#C00000"
-        
+        YELLOW = "#FFFF33"
+        DARK_PINK = "##A9242B"
+        PINK = "#EB6170"
+        DUSTY_PINK = "#E393A5"
+
+
+        # Create the first circle
+        circle1 = Circle(radius=4)
+        circle1.set_stroke(width=0)  
+        circle1.set_fill(DARK_PINK, opacity=0)       
+
+        # Create the second circle
+        circle2 = Circle(radius=3.5)
+        circle2.set_stroke(width=0)  
+        circle2.set_fill(DUSTY_PINK, opacity=0)    
+
+        # Add both circles to the scene
+        self.add(circle1, circle2)
+
+        # Animate the creation of both circles' outlines
+        self.play(Create(circle1), Create(circle2))
+
+        # Animate the fill for each circle, one after the other
+        self.play(
+            circle1.animate.set_fill(opacity=1),  # Fill the first circle
+            run_time=2
+        )
+        self.play(
+            circle2.animate.set_fill(opacity=1),  # Fill the second, larger circle
+            run_time=2
+        )
+
+        self.wait(2)
+
         image1 = SVGMobject("swastika.svg", height=6)
+        image1.set_stroke(color=YELLOW, width=8)
         
         image1_path = self.get_path_from_image(image1)
 
         vectors1 = self.get_fourier_vectors(image1_path, num_vectors=190)
         circles1 = self.get_circles(vectors1)
-        drawn_path1 = self.get_drawn_path(vectors1).set_color(RED)
+        drawn_path1 = self.get_drawn_path(vectors1).set_color(YELLOW)
 
         self.wait(1)
 
@@ -355,7 +388,8 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         self.wait(0.5)
 
         # Initially set the fill opacity to 0 to make it invisible
-        image1.set_fill(opacity=0)
+        image1.set_fill(color=INDIAN_FLAG_SAFFRON, opacity=0)
+
         self.add(image1)
 
         # Fade in the filled shape over a specified duration
@@ -370,6 +404,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
 
         image2 = SVGMobject("swastikaDot.svg", height=0.5)
+        image2.set_stroke(width=3)
 
         image2.shift(UP+RIGHT)
 
@@ -428,7 +463,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         self.wait(0.5) 
 
         # Initially set the fill opacity to 0 to make it invisible
-        image2.set_fill(color=INDIAN_FLAG_SAFFRON, opacity=0)
+        image2.set_fill(color=RED, opacity=0)
         self.add(image2)
 
         # Fade in the filled shape over a specified duration
@@ -443,6 +478,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
 
         image3 = SVGMobject("swastikaDot.svg", height=0.5)
+        image3.set_stroke(width=3)
 
         image3.shift(UP+LEFT)
 
@@ -501,7 +537,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         self.wait(0.5)
 
         # Initially set the fill opacity to 0 to make it invisible
-        image3.set_fill(color=INDIAN_FLAG_SAFFRON, opacity=0)
+        image3.set_fill(color=RED, opacity=0)
         self.add(image3)
 
         # Fade in the filled shape over a specified duration
@@ -516,6 +552,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
 
         image4 = SVGMobject("swastikaDot.svg", height=0.5)
+        image4.set_stroke(width=3)
 
         image4.shift(DOWN+RIGHT)
 
@@ -574,7 +611,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         self.wait(0.5)
 
         # Initially set the fill opacity to 0 to make it invisible
-        image4.set_fill(color=INDIAN_FLAG_SAFFRON, opacity=0)
+        image4.set_fill(color=RED, opacity=0)
         self.add(image4)
 
         # Fade in the filled shape over a specified duration
@@ -589,6 +626,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
 
         image5 = SVGMobject("swastikaDot.svg", height=0.5)
+        image5.set_stroke(width=3)
 
         image5.shift(DOWN+LEFT)
 
@@ -646,10 +684,10 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
         self.wait(0.5)
 
-        image5.set_fill(INDIAN_FLAG_SAFFRON, opacity=1).set_stroke(width=0)
+        image5.set_stroke(width=0)
 
         # Initially set the fill opacity to 0 to make it invisible
-        image5.set_fill(color=INDIAN_FLAG_SAFFRON, opacity=0)
+        image5.set_fill(color=RED, opacity=0)
 
         self.add(image5)
 
