@@ -398,7 +398,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
             run_time=3  # Adjust run_time for the desired speed of the fade
         )
 
-        self.wait(1)
+        self.wait(0.2)
 
         self.reset_state()
 
@@ -472,7 +472,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
             run_time=3  # Adjust run_time for the desired speed of the fade
         )
 
-        self.wait(1)
+        self.wait(0.2)
 
         self.reset_state()
 
@@ -546,7 +546,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
             run_time=3  # Adjust run_time for the desired speed of the fade
         )
 
-        self.wait(1)
+        self.wait(0.2)
 
         self.reset_state()
 
@@ -608,7 +608,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
             run_time=2.5,
         )
 
-        self.wait(0.5)
+        self.wait(0.2)
 
         # Initially set the fill opacity to 0 to make it invisible
         image4.set_fill(color=RED, opacity=0)
@@ -697,7 +697,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
             run_time=3  # Adjust run_time for the desired speed of the fade
         )
 
-        self.wait(3)
+        self.wait(1)
 
 class DiyaFourierTransform(FourierSceneAbstract):
     def __init__(self):
