@@ -24,7 +24,7 @@ class FourierSceneAbstract(ZoomedScene):
         }
 
         self.n_vectors = 60   
-        self.cycle_seconds = 5
+        self.cycle_seconds = 8
         self.parametric_func_step = 0.001   
         self.drawn_path_stroke_width = 8
         self.path_n_samples = 1000    
@@ -39,10 +39,15 @@ class FourierSceneAbstract(ZoomedScene):
 
     def toggle_vector_clock(self, start):           
         if start:
+            # Add the main updater to increment vector_clock
             self.vector_clock.add_updater(
-                lambda t, dt: t.increment_value(dt * self.slow_factor_tracker.get_value() / self.cycle_seconds)
+                lambda t, dt: t.increment_value(
+                    dt * self.slow_factor_tracker.get_value() / self.cycle_seconds
+                )
+                if t.get_value() < self.cycle_seconds else t.clear_updaters()
             )
         else:
+            # Clear updaters if `start` is False
             self.vector_clock.clear_updaters()
 
     def reset_state(self):
@@ -152,7 +157,7 @@ class FourierSceneAbstract(ZoomedScene):
         for i in range(n_curves):
             subpath = broken_path[i]
             a = i / (n_curves - 1)  # Calculate the corresponding value of a
-            if (alpha > a):
+            if (alpha >= a):
                 width = self.drawn_path_stroke_width
             else:
                 width = 0
@@ -233,14 +238,9 @@ class OmFourierTransform(FourierSceneAbstract):
         circles3.add_updater(self.update_circles)
         drawn_path3.add_updater(self.update_path)
 
+        
         self.toggle_vector_clock(start=True)
-
-        self.play(self.slow_factor_tracker.animate.set_value(0.5), run_time=self.cycle_seconds)
-        self.wait(1 * self.cycle_seconds)
-
-        self.wait(0.8 * self.cycle_seconds)
-        self.play(self.slow_factor_tracker.animate.set_value(0), run_time=0.5 * self.cycle_seconds)
-
+        self.play(self.slow_factor_tracker.animate.set_value(1), run_time=self.cycle_seconds)
         self.toggle_vector_clock(start=False)
 
         drawn_path1.clear_updaters()
@@ -317,14 +317,14 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         # Animate the fill for each circle, one after the other
         self.play(
             circle1.animate.set_fill(opacity=1),  # Fill the first circle
-            run_time=2
+            run_time=0.5
         )
         self.play(
             circle2.animate.set_fill(opacity=1),  # Fill the second, larger circle
-            run_time=2
+            run_time=0.5
         )
 
-        self.wait(2)
+        self.wait(0.5)
 
         image1 = SVGMobject("swastika.svg", height=6)
         image1.set_stroke(color=YELLOW, width=8)
@@ -335,18 +335,14 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         circles1 = self.get_circles(vectors1)
         drawn_path1 = self.get_drawn_path(vectors1).set_color(YELLOW)
 
-        self.wait(1)
-
         arrow_animations1 = [GrowArrow(arrow1) for arrow1 in vectors1]
         circle_animations1 = [Create(circle1) for circle1 in circles1]
 
         self.play(
             *arrow_animations1,
             *circle_animations1,
-            run_time=2.5,
+            run_time=1.5,
         )
-
-        self.wait(0.1)
 
         self.add(
             vectors1, 
@@ -359,13 +355,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         drawn_path1.add_updater(self.update_path)
 
         self.toggle_vector_clock(start=True)
-
-        self.play(self.slow_factor_tracker.animate.set_value(1.3), run_time=self.cycle_seconds)
-        self.wait(1 * self.cycle_seconds)
-
-        self.wait(0.8 * self.cycle_seconds)
-        self.play(self.slow_factor_tracker.animate.set_value(0), run_time=0.5 * self.cycle_seconds)
-
+        self.play(self.slow_factor_tracker.animate.set_value(1), run_time=self.cycle_seconds)
         self.toggle_vector_clock(start=False)
 
         drawn_path1.clear_updaters()
@@ -382,7 +372,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
         self.play(
             *uncreate_animations1,
-            run_time=2.5,
+            run_time=1.5,
         )
 
         self.wait(0.5)
@@ -395,7 +385,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         # Fade in the filled shape over a specified duration
         self.play(
             image1.animate.set_fill(opacity=1),  # Animate opacity from 0 to 1
-            run_time=3  # Adjust run_time for the desired speed of the fade
+            run_time=1.5  # Adjust run_time for the desired speed of the fade
         )
 
         self.wait(0.2)
@@ -420,7 +410,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         self.play(
             *arrow_animations2,
             *circle_animations2,
-            run_time=2.5,
+            run_time=1.5,
         )
 
         self.add(
@@ -432,15 +422,9 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         vectors2.add_updater(self.update_vectors)
         circles2.add_updater(self.update_circles)
         drawn_path2.add_updater(self.update_path)
- 
+        
         self.toggle_vector_clock(start=True)
-
-        self.play(self.slow_factor_tracker.animate.set_value(1.5), run_time=self.cycle_seconds)
-        self.wait(1 * self.cycle_seconds)
-
-        self.wait(0.8 * self.cycle_seconds)
-        self.play(self.slow_factor_tracker.animate.set_value(0), run_time=0.5 * self.cycle_seconds)
-
+        self.play(self.slow_factor_tracker.animate.set_value(1), run_time=self.cycle_seconds)
         self.toggle_vector_clock(start=False)
 
         drawn_path2.clear_updaters()
@@ -457,7 +441,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
         self.play(
             *uncreate_animations2,
-            run_time=2.5,
+            run_time=1.5,
         )
 
         self.wait(0.5) 
@@ -469,7 +453,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         # Fade in the filled shape over a specified duration
         self.play(
             image2.animate.set_fill(opacity=1),  # Animate opacity from 0 to 1
-            run_time=3  # Adjust run_time for the desired speed of the fade
+            run_time=1.5  # Adjust run_time for the desired speed of the fade
         )
 
         self.wait(0.2)
@@ -494,7 +478,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         self.play(
             *arrow_animations3,
             *circle_animations3,
-            run_time=2.5,
+            run_time=1.5,
         )
 
         self.add(
@@ -507,14 +491,9 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         circles3.add_updater(self.update_circles)
         drawn_path3.add_updater(self.update_path)
  
+        
         self.toggle_vector_clock(start=True)
-
-        self.play(self.slow_factor_tracker.animate.set_value(1.5), run_time=self.cycle_seconds)
-        self.wait(1 * self.cycle_seconds)
-
-        self.wait(0.8 * self.cycle_seconds)
-        self.play(self.slow_factor_tracker.animate.set_value(0), run_time=0.5 * self.cycle_seconds)
-
+        self.play(self.slow_factor_tracker.animate.set_value(1), run_time=self.cycle_seconds)
         self.toggle_vector_clock(start=False)
 
         drawn_path3.clear_updaters()
@@ -531,7 +510,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
         self.play(
             *uncreate_animations3,
-            run_time=2.5,
+            run_time=1.5,
         )
 
         self.wait(0.5)
@@ -543,7 +522,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         # Fade in the filled shape over a specified duration
         self.play(
             image3.animate.set_fill(opacity=1),  # Animate opacity from 0 to 1
-            run_time=3  # Adjust run_time for the desired speed of the fade
+            run_time=1.5  # Adjust run_time for the desired speed of the fade
         )
 
         self.wait(0.2)
@@ -568,7 +547,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         self.play(
             *arrow_animations4,
             *circle_animations4,
-            run_time=2.5,
+            run_time=1.5,
         )
 
         self.add(
@@ -581,14 +560,9 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         circles4.add_updater(self.update_circles)
         drawn_path4.add_updater(self.update_path)
  
+        
         self.toggle_vector_clock(start=True)
-
-        self.play(self.slow_factor_tracker.animate.set_value(1.5), run_time=self.cycle_seconds)
-        self.wait(1 * self.cycle_seconds)
-
-        self.wait(0.8 * self.cycle_seconds)
-        self.play(self.slow_factor_tracker.animate.set_value(0), run_time=0.5 * self.cycle_seconds)
-
+        self.play(self.slow_factor_tracker.animate.set_value(1), run_time=self.cycle_seconds)
         self.toggle_vector_clock(start=False)
 
         drawn_path4.clear_updaters()
@@ -605,7 +579,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
         self.play(
             *uncreate_animations4,
-            run_time=2.5,
+            run_time=1.5,
         )
 
         self.wait(0.2)
@@ -617,7 +591,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         # Fade in the filled shape over a specified duration
         self.play(
             image4.animate.set_fill(opacity=1),  # Animate opacity from 0 to 1
-            run_time=3  # Adjust run_time for the desired speed of the fade
+            run_time=1.5  # Adjust run_time for the desired speed of the fade
         )
 
         self.wait(1)
@@ -642,7 +616,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         self.play(
             *arrow_animations5,
             *circle_animations5,
-            run_time=2.5,
+            run_time=1.5,
         )
 
         self.add(
@@ -656,13 +630,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         drawn_path5.add_updater(self.update_path)
  
         self.toggle_vector_clock(start=True)
-
-        self.play(self.slow_factor_tracker.animate.set_value(1.5), run_time=self.cycle_seconds)
-        self.wait(1 * self.cycle_seconds)
-
-        self.wait(0.8 * self.cycle_seconds)
-        self.play(self.slow_factor_tracker.animate.set_value(0), run_time=0.5 * self.cycle_seconds)
-
+        self.play(self.slow_factor_tracker.animate.set_value(1), run_time=self.cycle_seconds)
         self.toggle_vector_clock(start=False)
 
         drawn_path5.clear_updaters()
@@ -679,7 +647,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
         self.play(
             *uncreate_animations5,
-            run_time=2.5,
+            run_time=1.5,
         )
 
         self.wait(0.5)
@@ -694,7 +662,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         # Fade in the filled shape over a specified duration
         self.play(
             image5.animate.set_fill(opacity=1),  # Animate opacity from 0 to 1
-            run_time=3  # Adjust run_time for the desired speed of the fade
+            run_time=1.5  # Adjust run_time for the desired speed of the fade
         )
 
         self.wait(1)
@@ -712,7 +680,7 @@ class DiyaFourierTransform(FourierSceneAbstract):
         PINK = "#EB6170"
         BROWN = "#79553A"
 
-        image1 = SVGMobject("flower.svg", height=6)
+        image1 = SVGMobject("flower.svg", height=7)
         image1.set_stroke(color=PINK, width=8)
         
         image1_path = self.get_path_from_image(image1)
@@ -721,18 +689,14 @@ class DiyaFourierTransform(FourierSceneAbstract):
         circles1 = self.get_circles(vectors1)
         drawn_path1 = self.get_drawn_path(vectors1).set_color(PINK)
 
-        self.wait(1)
-
         arrow_animations1 = [GrowArrow(arrow1) for arrow1 in vectors1]
         circle_animations1 = [Create(circle1) for circle1 in circles1]
 
         self.play(
             *arrow_animations1,
             *circle_animations1,
-            run_time=2.5,
+            run_time=1.5,
         )
-
-        self.wait(0.1)
 
         self.add(
             vectors1, 
@@ -745,13 +709,7 @@ class DiyaFourierTransform(FourierSceneAbstract):
         drawn_path1.add_updater(self.update_path)
 
         self.toggle_vector_clock(start=True)
-
-        self.play(self.slow_factor_tracker.animate.set_value(1.3), run_time=self.cycle_seconds)
-        self.wait(1 * self.cycle_seconds)
-
-        self.wait(0.8 * self.cycle_seconds)
-        self.play(self.slow_factor_tracker.animate.set_value(0), run_time=0.5 * self.cycle_seconds)
-
+        self.play(self.slow_factor_tracker.animate.set_value(1), run_time=self.cycle_seconds)
         self.toggle_vector_clock(start=False)
 
         drawn_path1.clear_updaters()
@@ -768,7 +726,7 @@ class DiyaFourierTransform(FourierSceneAbstract):
 
         self.play(
             *uncreate_animations1,
-            run_time=2.5,
+            run_time=1.5,
         )
 
         self.wait(0.5)
@@ -788,7 +746,7 @@ class DiyaFourierTransform(FourierSceneAbstract):
 
         self.reset_state()
         
-        image2 = SVGMobject("flower.svg", height=4)
+        image2 = SVGMobject("flower.svg", height=5)
         image2.set_stroke(color=INDIAN_FLAG_SAFFRON, width=8)
         
         image2_path = self.get_path_from_image(image2)
@@ -797,18 +755,14 @@ class DiyaFourierTransform(FourierSceneAbstract):
         circles2 = self.get_circles(vectors2)
         drawn_path2 = self.get_drawn_path(vectors2).set_color(INDIAN_FLAG_SAFFRON)
 
-        self.wait(1)
-
         arrow_animations2 = [GrowArrow(arrow2) for arrow2 in vectors2]
         circle_animations2 = [Create(circle2) for circle2 in circles2]
 
         self.play(
             *arrow_animations2,
             *circle_animations2,
-            run_time=2.5,
+            run_time=1.5,
         )
-
-        self.wait(0.1)
 
         self.add(
             vectors2, 
@@ -821,13 +775,7 @@ class DiyaFourierTransform(FourierSceneAbstract):
         drawn_path2.add_updater(self.update_path)
 
         self.toggle_vector_clock(start=True)
-
-        self.play(self.slow_factor_tracker.animate.set_value(1.3), run_time=self.cycle_seconds)
-        self.wait(1 * self.cycle_seconds)
-
-        self.wait(0.8 * self.cycle_seconds)
-        self.play(self.slow_factor_tracker.animate.set_value(0), run_time=0.5 * self.cycle_seconds)
-
+        self.play(self.slow_factor_tracker.animate.set_value(1), run_time=self.cycle_seconds)
         self.toggle_vector_clock(start=False)
 
         drawn_path2.clear_updaters()
@@ -844,7 +792,7 @@ class DiyaFourierTransform(FourierSceneAbstract):
 
         self.play(
             *uncreate_animations2,
-            run_time=2.5,
+            run_time=1.5,
         )
 
         self.wait(0.5)
@@ -864,16 +812,14 @@ class DiyaFourierTransform(FourierSceneAbstract):
 
         self.reset_state()
 
-        image3 = SVGMobject("diya_bottom.svg", height=1.5)
-        image3.set_stroke(color=BROWN, width=8)
+        image3 = SVGMobject("diya_bottom.svg", height=2.5)
+       # image3.set_stroke(color=BROWN, width=6)
         
         image3_path = self.get_path_from_image(image3)
 
         vectors3 = self.get_fourier_vectors(image3_path, num_vectors=50)
         circles3 = self.get_circles(vectors3)
         drawn_path3 = self.get_drawn_path(vectors2).set_color(BROWN)
-
-        self.wait(1)
 
         arrow_animations3 = [GrowArrow(arrow3) for arrow3 in vectors3]
         circle_animations3 = [Create(circle3) for circle3 in circles3]
@@ -883,8 +829,6 @@ class DiyaFourierTransform(FourierSceneAbstract):
             *circle_animations3,
             run_time=2.5,
         )
-
-        self.wait(0.1)
 
         self.add(
             vectors3, 
@@ -897,13 +841,7 @@ class DiyaFourierTransform(FourierSceneAbstract):
         drawn_path3.add_updater(self.update_path)
 
         self.toggle_vector_clock(start=True)
-
-        self.play(self.slow_factor_tracker.animate.set_value(1.3), run_time=self.cycle_seconds)
-        self.wait(1 * self.cycle_seconds)
-
-        self.wait(0.8 * self.cycle_seconds)
-        self.play(self.slow_factor_tracker.animate.set_value(0), run_time=0.5 * self.cycle_seconds)
-
+        self.play(self.slow_factor_tracker.animate.set_value(1), run_time=self.cycle_seconds)
         self.toggle_vector_clock(start=False)
 
         drawn_path3.clear_updaters()
@@ -920,20 +858,7 @@ class DiyaFourierTransform(FourierSceneAbstract):
 
         self.play(
             *uncreate_animations3,
-            run_time=2.5,
-        )
-
-        self.wait(0.5)
-
-        # Initially set the fill opacity to 0 to make it invisible
-        image3.set_fill(color=BROWN, opacity=0)
-
-        self.add(image3)
-
-        # Fade in the filled shape over a specified duration
-        self.play(
-            image3.animate.set_fill(opacity=1),  # Animate opacity from 0 to 1
-            run_time=3  # Adjust run_time for the desired speed of the fade
+            run_time=1.5,
         )
 
         self.wait(1)
