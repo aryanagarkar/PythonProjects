@@ -1,9 +1,6 @@
 from manim import *
 import numpy as np
 
-from manim import config
-config.tex_template.compiler = "xelatex"
-
 class FourierSceneAbstract(ZoomedScene):
     def __init__(self):
         super().__init__()
@@ -24,7 +21,7 @@ class FourierSceneAbstract(ZoomedScene):
         }
 
         self.n_vectors = 60   
-        self.cycle_seconds = 5
+        self.cycle_seconds = 15
         self.parametric_func_step = 0.001   
         self.drawn_path_stroke_width = 8
         self.path_n_samples = 1000    
@@ -37,41 +34,33 @@ class FourierSceneAbstract(ZoomedScene):
         self.slow_factor_tracker = ValueTracker(0)
         self.add(self.vector_clock)
 
-    def toggle_vector_clock(self, start):
-        # Reset the completion flag at start
-        self.cycle_complete = False                           
+    def toggle_vector_clock(self, start, cycle_seconds, scale_amount):
         if start:
-            # Reset vector_clock to start from 0 for a new rotation
-            self.vector_clock.set_value(0)
-            # Add an updater to increment vector_clock and stop it when it reaches 1
+            self.vector_clock.set_value(0)  # Reset clock to 0 at the start
             self.vector_clock.add_updater(
-                lambda t, dt: self.increment_and_stop_at_one(t, dt)
+                lambda t, dt: self.increment_and_stop_at_one(t, dt, cycle_seconds, scale_amount)
             )
         else:
-            # Clear updaters if `start` is False
-            self.vector_clock.clear_updaters()
+            self.vector_clock.clear_updaters()  # Only clear when stopping
 
-    def increment_and_stop_at_one(self, t, dt):
+    def increment_and_stop_at_one(self, t, dt, cycle_seconds, scale_amount):
+        self.cycle_seconds = cycle_seconds 
         # Increment value by a fraction that depends on the cycle_seconds and slow_factor_tracker
-        increment = dt * self.slow_factor_tracker.get_value() / self.cycle_seconds
+        increment = (dt * self.slow_factor_tracker.get_value() / self.cycle_seconds)*scale_amount
         new_value = t.get_value() + increment
 
         # Check if the new value exceeds or reaches 1 (indicating one full cycle)
-        if new_value >= self.cycle_seconds:
+        if new_value >= 1:
             # Set vector_clock to exactly 1 and stop the updater.
             t.set_value(1)
-            self.stop_vector_clock()  # Stop the clock after completing the cycle
+            #self.stop_vector_clock()  # Stop the clock after completing the cycle
         else:
             # Otherwise, continue incrementing normally
             t.increment_value(increment)
-            
-    def stop_vector_clock(self):
-        # Turn off updaters and set clock to exactly one cycle
-        toggle_vector_clock(start=False)  # Clear all updaters to stop the clock
 
     def reset_state(self):
         # Stop the vector clock and reset its value
-        self.toggle_vector_clock(start=False)
+        self.toggle_vector_clock(start=False, cycle_seconds=15, scale_amount=2.5)
         self.vector_clock.set_value(0)
 
         # Reset slow factor tracker
@@ -258,9 +247,9 @@ class OmFourierTransform(FourierSceneAbstract):
         drawn_path3.add_updater(self.update_path)
 
         
-        self.toggle_vector_clock(start=True)
+        self.toggle_vector_clock(start=True, cycle_seconds=10, scale_amount=2.5)
         self.play(self.slow_factor_tracker.animate.set_value(1), run_time=self.cycle_seconds)
-        self.toggle_vector_clock(start=False)
+        self.toggle_vector_clock(start=False, cycle_seconds=10, scale_amount=2.5)
 
         drawn_path1.clear_updaters()
         vectors1.clear_updaters()
@@ -316,6 +305,18 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         PINK = "#EB6170"
         DUSTY_PINK = "#E393A5"
 
+        # Create a Text object to display the vector_clock value
+        clock_display = DecimalNumber(
+            self.vector_clock.get_value(),  # Initial value
+            num_decimal_places=2  # Number of decimal places
+        ).to_corner(UP + RIGHT)  # Position it in the top-right corner
+
+        # Update the Text object with the current value of vector_clock
+        clock_display.add_updater(lambda d: d.set_value(self.vector_clock.get_value()))
+
+        # Add the display to the scene
+        self.add(clock_display)
+
 
         # Create the first circle
         circle1 = Circle(radius=4)
@@ -343,7 +344,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
             run_time=0.5
         )
 
-        self.wait(0.5)
+        self.wait(0.2)
 
         image1 = SVGMobject("swastika.svg", height=6)
         image1.set_stroke(color=YELLOW, width=8)
@@ -360,7 +361,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         self.play(
             *arrow_animations1,
             *circle_animations1,
-            run_time=1.5,
+            run_time=1,
         )
 
         self.add(
@@ -373,28 +374,17 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         circles1.add_updater(self.update_circles)
         drawn_path1.add_updater(self.update_path)
 
-        self.toggle_vector_clock(start=True)
+        self.toggle_vector_clock(start=True, cycle_seconds=12, scale_amount=2)
         self.play(self.slow_factor_tracker.animate.set_value(1), run_time=self.cycle_seconds)
-        self.toggle_vector_clock(start=False)
+        self.toggle_vector_clock(start=False, cycle_seconds=12, scale_amount=2)
 
         drawn_path1.clear_updaters()
         vectors1.clear_updaters()
         circles1.clear_updaters()
 
-        uncreate_animations1 = []
+        self.play(*[Uncreate(obj) for obj in vectors1 + circles1], run_time=1)
 
-        for arrow1 in vectors1:
-            uncreate_animations1.append(Uncreate(arrow1))
-
-        for circle1 in circles1:
-            uncreate_animations1.append(Uncreate(circle1))
-
-        self.play(
-            *uncreate_animations1,
-            run_time=1.5,
-        )
-
-        self.wait(0.5)
+        self.wait(0.1)
 
         # Initially set the fill opacity to 0 to make it invisible
         image1.set_fill(color=INDIAN_FLAG_SAFFRON, opacity=0)
@@ -404,13 +394,12 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         # Fade in the filled shape over a specified duration
         self.play(
             image1.animate.set_fill(opacity=1),  # Animate opacity from 0 to 1
-            run_time=1.5  # Adjust run_time for the desired speed of the fade
+            run_time=0.5  # Adjust run_time for the desired speed of the fade
         )
 
-        self.wait(0.2)
+        self.wait(0.1)
 
         self.reset_state()
-
 
         image2 = SVGMobject("swastikaDot.svg", height=0.5)
         image2.set_stroke(width=3)
@@ -429,7 +418,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         self.play(
             *arrow_animations2,
             *circle_animations2,
-            run_time=1.5,
+            run_time=1,
         )
 
         self.add(
@@ -442,28 +431,17 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         circles2.add_updater(self.update_circles)
         drawn_path2.add_updater(self.update_path)
         
-        self.toggle_vector_clock(start=True)
+        self.toggle_vector_clock(start=True, cycle_seconds=2, scale_amount=2)
         self.play(self.slow_factor_tracker.animate.set_value(1), run_time=self.cycle_seconds)
-        self.toggle_vector_clock(start=False)
+        self.toggle_vector_clock(start=False, cycle_seconds=2, scale_amount=2)
 
         drawn_path2.clear_updaters()
         vectors2.clear_updaters()
         circles2.clear_updaters()
 
-        uncreate_animations2 = []
+        self.play(*[Uncreate(obj) for obj in vectors2 + circles2], run_time=1)
 
-        for arrow2 in vectors2:
-            uncreate_animations2.append(Uncreate(arrow2))
-
-        for circle2 in circles2:
-            uncreate_animations2.append(Uncreate(circle2))
-
-        self.play(
-            *uncreate_animations2,
-            run_time=1.5,
-        )
-
-        self.wait(0.5) 
+        self.wait(0.1) 
 
         # Initially set the fill opacity to 0 to make it invisible
         image2.set_fill(color=RED, opacity=0)
@@ -472,13 +450,12 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         # Fade in the filled shape over a specified duration
         self.play(
             image2.animate.set_fill(opacity=1),  # Animate opacity from 0 to 1
-            run_time=1.5  # Adjust run_time for the desired speed of the fade
+            run_time=0.5  # Adjust run_time for the desired speed of the fade
         )
 
-        self.wait(0.2)
+        self.wait(0.1)
 
         self.reset_state()
-
 
         image3 = SVGMobject("swastikaDot.svg", height=0.5)
         image3.set_stroke(width=3)
@@ -497,7 +474,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         self.play(
             *arrow_animations3,
             *circle_animations3,
-            run_time=1.5,
+            run_time=1,
         )
 
         self.add(
@@ -510,10 +487,9 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         circles3.add_updater(self.update_circles)
         drawn_path3.add_updater(self.update_path)
  
-        
-        self.toggle_vector_clock(start=True)
+        self.toggle_vector_clock(start=True, cycle_seconds=2, scale_amount=2)
         self.play(self.slow_factor_tracker.animate.set_value(1), run_time=self.cycle_seconds)
-        self.toggle_vector_clock(start=False)
+        self.toggle_vector_clock(start=False, cycle_seconds=2, scale_amount=2)
 
         drawn_path3.clear_updaters()
         vectors3.clear_updaters()
@@ -529,10 +505,10 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
         self.play(
             *uncreate_animations3,
-            run_time=1.5,
+            run_time=1,
         )
 
-        self.wait(0.5)
+        self.wait(0.1)
 
         # Initially set the fill opacity to 0 to make it invisible
         image3.set_fill(color=RED, opacity=0)
@@ -541,13 +517,12 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         # Fade in the filled shape over a specified duration
         self.play(
             image3.animate.set_fill(opacity=1),  # Animate opacity from 0 to 1
-            run_time=1.5  # Adjust run_time for the desired speed of the fade
+            run_time=0.5  # Adjust run_time for the desired speed of the fade
         )
 
-        self.wait(0.2)
+        self.wait(0.1)
 
         self.reset_state()
-
 
         image4 = SVGMobject("swastikaDot.svg", height=0.5)
         image4.set_stroke(width=3)
@@ -566,7 +541,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         self.play(
             *arrow_animations4,
             *circle_animations4,
-            run_time=1.5,
+            run_time=1,
         )
 
         self.add(
@@ -580,9 +555,9 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         drawn_path4.add_updater(self.update_path)
  
         
-        self.toggle_vector_clock(start=True)
+        self.toggle_vector_clock(start=True, cycle_seconds=2, scale_amount=2)
         self.play(self.slow_factor_tracker.animate.set_value(1), run_time=self.cycle_seconds)
-        self.toggle_vector_clock(start=False)
+        self.toggle_vector_clock(start=False, cycle_seconds=2, scale_amount=2)
 
         drawn_path4.clear_updaters()
         vectors4.clear_updaters()
@@ -598,10 +573,10 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
         self.play(
             *uncreate_animations4,
-            run_time=1.5,
+            run_time=1,
         )
 
-        self.wait(0.2)
+        self.wait(0.1)
 
         # Initially set the fill opacity to 0 to make it invisible
         image4.set_fill(color=RED, opacity=0)
@@ -610,13 +585,12 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         # Fade in the filled shape over a specified duration
         self.play(
             image4.animate.set_fill(opacity=1),  # Animate opacity from 0 to 1
-            run_time=1.5  # Adjust run_time for the desired speed of the fade
+            run_time=0.5  # Adjust run_time for the desired speed of the fade
         )
 
-        self.wait(1)
+        self.wait(0.1)
         
         self.reset_state()
-
 
         image5 = SVGMobject("swastikaDot.svg", height=0.5)
         image5.set_stroke(width=3)
@@ -635,7 +609,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         self.play(
             *arrow_animations5,
             *circle_animations5,
-            run_time=1.5,
+            run_time=1,
         )
 
         self.add(
@@ -648,9 +622,9 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         circles5.add_updater(self.update_circles)
         drawn_path5.add_updater(self.update_path)
  
-        self.toggle_vector_clock(start=True)
+        self.toggle_vector_clock(start=True, cycle_seconds=2, scale_amount=2)
         self.play(self.slow_factor_tracker.animate.set_value(1), run_time=self.cycle_seconds)
-        self.toggle_vector_clock(start=False)
+        self.toggle_vector_clock(start=False, cycle_seconds=2, scale_amount=2)
 
         drawn_path5.clear_updaters()
         vectors5.clear_updaters()
@@ -666,10 +640,10 @@ class SwastikaFourierTransform(FourierSceneAbstract):
 
         self.play(
             *uncreate_animations5,
-            run_time=1.5,
+            run_time=1,
         )
 
-        self.wait(0.5)
+        self.wait(0.1)
 
         image5.set_stroke(width=0)
 
@@ -681,7 +655,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         # Fade in the filled shape over a specified duration
         self.play(
             image5.animate.set_fill(opacity=1),  # Animate opacity from 0 to 1
-            run_time=1.5  # Adjust run_time for the desired speed of the fade
+            run_time=0.5  # Adjust run_time for the desired speed of the fade
         )
 
         self.wait(1)
