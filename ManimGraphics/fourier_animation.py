@@ -304,20 +304,7 @@ class SwastikaFourierTransform(FourierSceneAbstract):
         DARK_PINK = "##A9242B"
         PINK = "#EB6170"
         DUSTY_PINK = "#E393A5"
-
-        # Create a Text object to display the vector_clock value
-        clock_display = DecimalNumber(
-            self.vector_clock.get_value(),  # Initial value
-            num_decimal_places=2  # Number of decimal places
-        ).to_corner(UP + RIGHT)  # Position it in the top-right corner
-
-        # Update the Text object with the current value of vector_clock
-        clock_display.add_updater(lambda d: d.set_value(self.vector_clock.get_value()))
-
-        # Add the display to the scene
-        self.add(clock_display)
-
-
+        
         # Create the first circle
         circle1 = Circle(radius=4)
         circle1.set_stroke(width=0)  
