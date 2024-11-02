@@ -24,7 +24,7 @@ class FourierSceneAbstract(ZoomedScene):
         }
 
         self.n_vectors = 60   
-        self.cycle_seconds = 8
+        self.cycle_seconds = 5
         self.parametric_func_step = 0.001   
         self.drawn_path_stroke_width = 8
         self.path_n_samples = 1000    
@@ -37,18 +37,37 @@ class FourierSceneAbstract(ZoomedScene):
         self.slow_factor_tracker = ValueTracker(0)
         self.add(self.vector_clock)
 
-    def toggle_vector_clock(self, start):           
+    def toggle_vector_clock(self, start):
+        # Reset the completion flag at start
+        self.cycle_complete = False                           
         if start:
-            # Add the main updater to increment vector_clock
+            # Reset vector_clock to start from 0 for a new rotation
+            self.vector_clock.set_value(0)
+            # Add an updater to increment vector_clock and stop it when it reaches 1
             self.vector_clock.add_updater(
-                lambda t, dt: t.increment_value(
-                    dt * self.slow_factor_tracker.get_value() / self.cycle_seconds
-                )
-                if t.get_value() < self.cycle_seconds else t.clear_updaters()
+                lambda t, dt: self.increment_and_stop_at_one(t, dt)
             )
         else:
             # Clear updaters if `start` is False
             self.vector_clock.clear_updaters()
+
+    def increment_and_stop_at_one(self, t, dt):
+        # Increment value by a fraction that depends on the cycle_seconds and slow_factor_tracker
+        increment = dt * self.slow_factor_tracker.get_value() / self.cycle_seconds
+        new_value = t.get_value() + increment
+
+        # Check if the new value exceeds or reaches 1 (indicating one full cycle)
+        if new_value >= self.cycle_seconds:
+            # Set vector_clock to exactly 1 and stop the updater.
+            t.set_value(1)
+            self.stop_vector_clock()  # Stop the clock after completing the cycle
+        else:
+            # Otherwise, continue incrementing normally
+            t.increment_value(increment)
+            
+    def stop_vector_clock(self):
+        # Turn off updaters and set clock to exactly one cycle
+        toggle_vector_clock(start=False)  # Clear all updaters to stop the clock
 
     def reset_state(self):
         # Stop the vector clock and reset its value
